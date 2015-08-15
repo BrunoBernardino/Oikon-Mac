@@ -1,0 +1,496 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		4F03026C1B2CE8160052CA1E /* ExpensesListSidebarViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F03026B1B2CE8160052CA1E /* ExpensesListSidebarViewController.swift */; };
+		4F0A191F1B4A9DA000146490 /* EditExpenseTypeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F0A191E1B4A9DA000146490 /* EditExpenseTypeViewController.swift */; };
+		4F2040411A94F3630023D3EB /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F2040401A94F3630023D3EB /* AppDelegate.swift */; };
+		4F2040431A94F3630023D3EB /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F2040421A94F3630023D3EB /* ViewController.swift */; };
+		4F2040461A94F3630023D3EB /* Oikon.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 4F2040441A94F3630023D3EB /* Oikon.xcdatamodeld */; };
+		4F2040481A94F3630023D3EB /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4F2040471A94F3630023D3EB /* Images.xcassets */; };
+		4F20404B1A94F3630023D3EB /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 4F2040491A94F3630023D3EB /* Main.storyboard */; };
+		4F2040571A94F3630023D3EB /* OikonTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F2040561A94F3630023D3EB /* OikonTests.swift */; };
+		4F3034D11B4D3CA500579BBD /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F3034D01B4D3CA500579BBD /* SettingsViewController.swift */; };
+		4F5DB6851B125AEE00936CD5 /* ExpensesListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F5DB6841B125AEE00936CD5 /* ExpensesListViewController.swift */; };
+		4F6492B11B35CF38002BF663 /* AddExpenseTypeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F6492B01B35CF38002BF663 /* AddExpenseTypeViewController.swift */; };
+		4FD284821B4BEA9000A0954E /* EditExpenseViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4FD284811B4BEA9000A0954E /* EditExpenseViewController.swift */; };
+		4FD81E101B4ED64E001953F1 /* AboutViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4FD81E0F1B4ED64E001953F1 /* AboutViewController.swift */; };
+		4FD81E121B4ED9DE001953F1 /* WindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4FD81E111B4ED9DE001953F1 /* WindowController.swift */; };
+		4FF469381B3098E500675D16 /* AddExpenseViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4FF469371B3098E500675D16 /* AddExpenseViewController.swift */; };
+		4FF4693A1B35BFDF00675D16 /* ExpenseTypesListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4FF469391B35BFDF00675D16 /* ExpenseTypesListViewController.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		4F2040511A94F3630023D3EB /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 4F2040331A94F3630023D3EB /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 4F20403A1A94F3630023D3EB;
+			remoteInfo = Oikon;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		4F03026B1B2CE8160052CA1E /* ExpensesListSidebarViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ExpensesListSidebarViewController.swift; sourceTree = "<group>"; };
+		4F0A191E1B4A9DA000146490 /* EditExpenseTypeViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EditExpenseTypeViewController.swift; sourceTree = "<group>"; };
+		4F20403B1A94F3630023D3EB /* Oikon.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Oikon.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		4F20403F1A94F3630023D3EB /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		4F2040401A94F3630023D3EB /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		4F2040421A94F3630023D3EB /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		4F2040451A94F3630023D3EB /* Oikon.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Oikon.xcdatamodel; sourceTree = "<group>"; };
+		4F2040471A94F3630023D3EB /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
+		4F20404A1A94F3630023D3EB /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		4F2040501A94F3630023D3EB /* OikonTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = OikonTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		4F2040551A94F3630023D3EB /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		4F2040561A94F3630023D3EB /* OikonTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OikonTests.swift; sourceTree = "<group>"; };
+		4F2040601A94F3920023D3EB /* Oikon.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = Oikon.entitlements; sourceTree = "<group>"; };
+		4F3034D01B4D3CA500579BBD /* SettingsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
+		4F5DB6841B125AEE00936CD5 /* ExpensesListViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ExpensesListViewController.swift; sourceTree = "<group>"; };
+		4F6492B01B35CF38002BF663 /* AddExpenseTypeViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AddExpenseTypeViewController.swift; sourceTree = "<group>"; };
+		4FD284811B4BEA9000A0954E /* EditExpenseViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EditExpenseViewController.swift; sourceTree = "<group>"; };
+		4FD81E0F1B4ED64E001953F1 /* AboutViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AboutViewController.swift; sourceTree = "<group>"; };
+		4FD81E111B4ED9DE001953F1 /* WindowController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WindowController.swift; sourceTree = "<group>"; };
+		4FF469371B3098E500675D16 /* AddExpenseViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AddExpenseViewController.swift; sourceTree = "<group>"; };
+		4FF469391B35BFDF00675D16 /* ExpenseTypesListViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ExpenseTypesListViewController.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		4F2040381A94F3630023D3EB /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		4F20404D1A94F3630023D3EB /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		4F2040321A94F3630023D3EB = {
+			isa = PBXGroup;
+			children = (
+				4F20403D1A94F3630023D3EB /* Oikon */,
+				4F2040531A94F3630023D3EB /* OikonTests */,
+				4F20403C1A94F3630023D3EB /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		4F20403C1A94F3630023D3EB /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				4F20403B1A94F3630023D3EB /* Oikon.app */,
+				4F2040501A94F3630023D3EB /* OikonTests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		4F20403D1A94F3630023D3EB /* Oikon */ = {
+			isa = PBXGroup;
+			children = (
+				4F2040601A94F3920023D3EB /* Oikon.entitlements */,
+				4F2040401A94F3630023D3EB /* AppDelegate.swift */,
+				4F2040421A94F3630023D3EB /* ViewController.swift */,
+				4FD81E111B4ED9DE001953F1 /* WindowController.swift */,
+				4FD81E0F1B4ED64E001953F1 /* AboutViewController.swift */,
+				4F5DB6841B125AEE00936CD5 /* ExpensesListViewController.swift */,
+				4FF469391B35BFDF00675D16 /* ExpenseTypesListViewController.swift */,
+				4F03026B1B2CE8160052CA1E /* ExpensesListSidebarViewController.swift */,
+				4FF469371B3098E500675D16 /* AddExpenseViewController.swift */,
+				4FD284811B4BEA9000A0954E /* EditExpenseViewController.swift */,
+				4F3034D01B4D3CA500579BBD /* SettingsViewController.swift */,
+				4F6492B01B35CF38002BF663 /* AddExpenseTypeViewController.swift */,
+				4F0A191E1B4A9DA000146490 /* EditExpenseTypeViewController.swift */,
+				4F2040471A94F3630023D3EB /* Images.xcassets */,
+				4F2040491A94F3630023D3EB /* Main.storyboard */,
+				4F2040441A94F3630023D3EB /* Oikon.xcdatamodeld */,
+				4F20403E1A94F3630023D3EB /* Supporting Files */,
+			);
+			path = Oikon;
+			sourceTree = "<group>";
+		};
+		4F20403E1A94F3630023D3EB /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				4F20403F1A94F3630023D3EB /* Info.plist */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		4F2040531A94F3630023D3EB /* OikonTests */ = {
+			isa = PBXGroup;
+			children = (
+				4F2040561A94F3630023D3EB /* OikonTests.swift */,
+				4F2040541A94F3630023D3EB /* Supporting Files */,
+			);
+			path = OikonTests;
+			sourceTree = "<group>";
+		};
+		4F2040541A94F3630023D3EB /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				4F2040551A94F3630023D3EB /* Info.plist */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		4F20403A1A94F3630023D3EB /* Oikon */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 4F20405A1A94F3630023D3EB /* Build configuration list for PBXNativeTarget "Oikon" */;
+			buildPhases = (
+				4F2040371A94F3630023D3EB /* Sources */,
+				4F2040381A94F3630023D3EB /* Frameworks */,
+				4F2040391A94F3630023D3EB /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = Oikon;
+			productName = Oikon;
+			productReference = 4F20403B1A94F3630023D3EB /* Oikon.app */;
+			productType = "com.apple.product-type.application";
+		};
+		4F20404F1A94F3630023D3EB /* OikonTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 4F20405D1A94F3630023D3EB /* Build configuration list for PBXNativeTarget "OikonTests" */;
+			buildPhases = (
+				4F20404C1A94F3630023D3EB /* Sources */,
+				4F20404D1A94F3630023D3EB /* Frameworks */,
+				4F20404E1A94F3630023D3EB /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				4F2040521A94F3630023D3EB /* PBXTargetDependency */,
+			);
+			name = OikonTests;
+			productName = OikonTests;
+			productReference = 4F2040501A94F3630023D3EB /* OikonTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		4F2040331A94F3630023D3EB /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastSwiftUpdateCheck = 0700;
+				LastUpgradeCheck = 0700;
+				ORGANIZATIONNAME = emotionLoop;
+				TargetAttributes = {
+					4F20403A1A94F3630023D3EB = {
+						CreatedOnToolsVersion = 6.1;
+						DevelopmentTeam = BR4RWWLMM9;
+						SystemCapabilities = {
+							com.apple.Sandbox = {
+								enabled = 1;
+							};
+							com.apple.iCloud = {
+								enabled = 1;
+							};
+						};
+					};
+					4F20404F1A94F3630023D3EB = {
+						CreatedOnToolsVersion = 6.1;
+						TestTargetID = 4F20403A1A94F3630023D3EB;
+					};
+				};
+			};
+			buildConfigurationList = 4F2040361A94F3630023D3EB /* Build configuration list for PBXProject "Oikon" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 4F2040321A94F3630023D3EB;
+			productRefGroup = 4F20403C1A94F3630023D3EB /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				4F20403A1A94F3630023D3EB /* Oikon */,
+				4F20404F1A94F3630023D3EB /* OikonTests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		4F2040391A94F3630023D3EB /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				4F2040481A94F3630023D3EB /* Images.xcassets in Resources */,
+				4F20404B1A94F3630023D3EB /* Main.storyboard in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		4F20404E1A94F3630023D3EB /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		4F2040371A94F3630023D3EB /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				4F2040431A94F3630023D3EB /* ViewController.swift in Sources */,
+				4FF469381B3098E500675D16 /* AddExpenseViewController.swift in Sources */,
+				4F3034D11B4D3CA500579BBD /* SettingsViewController.swift in Sources */,
+				4F2040461A94F3630023D3EB /* Oikon.xcdatamodeld in Sources */,
+				4F6492B11B35CF38002BF663 /* AddExpenseTypeViewController.swift in Sources */,
+				4F5DB6851B125AEE00936CD5 /* ExpensesListViewController.swift in Sources */,
+				4FD81E101B4ED64E001953F1 /* AboutViewController.swift in Sources */,
+				4FD284821B4BEA9000A0954E /* EditExpenseViewController.swift in Sources */,
+				4FD81E121B4ED9DE001953F1 /* WindowController.swift in Sources */,
+				4F03026C1B2CE8160052CA1E /* ExpensesListSidebarViewController.swift in Sources */,
+				4F2040411A94F3630023D3EB /* AppDelegate.swift in Sources */,
+				4F0A191F1B4A9DA000146490 /* EditExpenseTypeViewController.swift in Sources */,
+				4FF4693A1B35BFDF00675D16 /* ExpenseTypesListViewController.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		4F20404C1A94F3630023D3EB /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				4F2040571A94F3630023D3EB /* OikonTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		4F2040521A94F3630023D3EB /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 4F20403A1A94F3630023D3EB /* Oikon */;
+			targetProxy = 4F2040511A94F3630023D3EB /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		4F2040491A94F3630023D3EB /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				4F20404A1A94F3630023D3EB /* Base */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		4F2040581A94F3630023D3EB /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "-";
+				COPY_PHASE_STRIP = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.10;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		4F2040591A94F3630023D3EB /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "-";
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.10;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+		4F20405B1A94F3630023D3EB /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = Oikon/Oikon.entitlements;
+				CODE_SIGN_IDENTITY = "Mac Developer";
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Mac Developer";
+				COMBINE_HIDPI_IMAGES = YES;
+				INFOPLIST_FILE = Oikon/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.emotionloop.$(PRODUCT_NAME:rfc1034identifier)Mac";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
+			};
+			name = Debug;
+		};
+		4F20405C1A94F3630023D3EB /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = Oikon/Oikon.entitlements;
+				CODE_SIGN_IDENTITY = "Mac Developer";
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Mac Developer";
+				COMBINE_HIDPI_IMAGES = YES;
+				INFOPLIST_FILE = Oikon/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.emotionloop.$(PRODUCT_NAME:rfc1034identifier)Mac";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
+			};
+			name = Release;
+		};
+		4F20405E1A94F3630023D3EB /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				COMBINE_HIDPI_IMAGES = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(DEVELOPER_FRAMEWORKS_DIR)",
+					"$(inherited)",
+				);
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				INFOPLIST_FILE = OikonTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.emotionloop.$(PRODUCT_NAME:rfc1034identifier)";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Oikon.app/Contents/MacOS/Oikon";
+			};
+			name = Debug;
+		};
+		4F20405F1A94F3630023D3EB /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				COMBINE_HIDPI_IMAGES = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(DEVELOPER_FRAMEWORKS_DIR)",
+					"$(inherited)",
+				);
+				INFOPLIST_FILE = OikonTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.emotionloop.$(PRODUCT_NAME:rfc1034identifier)";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Oikon.app/Contents/MacOS/Oikon";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		4F2040361A94F3630023D3EB /* Build configuration list for PBXProject "Oikon" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				4F2040581A94F3630023D3EB /* Debug */,
+				4F2040591A94F3630023D3EB /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		4F20405A1A94F3630023D3EB /* Build configuration list for PBXNativeTarget "Oikon" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				4F20405B1A94F3630023D3EB /* Debug */,
+				4F20405C1A94F3630023D3EB /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		4F20405D1A94F3630023D3EB /* Build configuration list for PBXNativeTarget "OikonTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				4F20405E1A94F3630023D3EB /* Debug */,
+				4F20405F1A94F3630023D3EB /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+
+/* Begin XCVersionGroup section */
+		4F2040441A94F3630023D3EB /* Oikon.xcdatamodeld */ = {
+			isa = XCVersionGroup;
+			children = (
+				4F2040451A94F3630023D3EB /* Oikon.xcdatamodel */,
+			);
+			currentVersion = 4F2040451A94F3630023D3EB /* Oikon.xcdatamodel */;
+			path = Oikon.xcdatamodeld;
+			sourceTree = "<group>";
+			versionGroupType = wrapper.xcdatamodel;
+		};
+/* End XCVersionGroup section */
+	};
+	rootObject = 4F2040331A94F3630023D3EB /* Project object */;
+}
