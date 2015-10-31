@@ -64,12 +64,16 @@ class AddExpenseTypeViewController: NSViewController {
         // Save object
         //
         
-        let newExpenseType: NSManagedObject = NSEntityDescription.insertNewObjectForEntityForName("ExpenseType", inManagedObjectContext: context!) as! NSManagedObject
+        let newExpenseType: NSManagedObject = NSEntityDescription.insertNewObjectForEntityForName("ExpenseType", inManagedObjectContext: context!) 
 
         newExpenseType.setValue(expenseTypeName, forKey: "name")
         
         var error: NSError? = nil
-        context?.save(&error)
+        do {
+            try context?.save()
+        } catch let error1 as NSError {
+            error = error1
+        }
         
         if ( error == nil ) {
             // Cleanup field

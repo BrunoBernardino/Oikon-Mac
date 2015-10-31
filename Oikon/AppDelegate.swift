@@ -39,7 +39,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSUserNotificationCenterDele
     lazy var applicationDocumentsDirectory: NSURL = {
         // The directory the application uses to store the Core Data store file. This code uses a directory named "com.emotionloop.OikonMac" in the user's Application Support directory.
         let urls = NSFileManager.defaultManager().URLsForDirectory(.ApplicationSupportDirectory, inDomains: .UserDomainMask)
-        let appSupportURL = urls[urls.count - 1] as! NSURL
+        let appSupportURL = urls[urls.count - 1] 
         return appSupportURL.URLByAppendingPathComponent("com.emotionloop.OikonMac")
     }()
 
@@ -58,7 +58,14 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSUserNotificationCenterDele
 
         // Make sure the application files directory is there
         let propertiesOpt: [NSObject: AnyObject]?
-        propertiesOpt = self.applicationDocumentsDirectory.resourceValuesForKeys([NSURLIsDirectoryKey], error: &error)
+        do {
+            propertiesOpt = try self.applicationDocumentsDirectory.resourceValuesForKeys([NSURLIsDirectoryKey])
+        } catch var error1 as NSError {
+            error = error1
+            propertiesOpt = nil
+        } catch {
+            fatalError()
+        }
 
         if let properties = propertiesOpt {
             if !properties[NSURLIsDirectoryKey]!.boolValue {
@@ -66,14 +73,26 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSUserNotificationCenterDele
                 shouldFail = true
             }
         } else {
-            fileManager.createDirectoryAtPath(self.applicationDocumentsDirectory.path!, withIntermediateDirectories: true, attributes: nil, error: &error)
+            do {
+                try fileManager.createDirectoryAtPath(self.applicationDocumentsDirectory.path!, withIntermediateDirectories: true, attributes: nil)
+            } catch var error1 as NSError {
+                error = error1
+            } catch {
+                fatalError()
+            }
         }
         
         // Create the coordinator and store
         var coordinator: NSPersistentStoreCoordinator?
         if !shouldFail && (error == nil) {
             coordinator = NSPersistentStoreCoordinator(managedObjectModel: self.managedObjectModel)
-            coordinator!.addPersistentStoreWithType(NSSQLiteStoreType, configuration: nil, URL: self.currentStoreURL(), options: self.storeOptions as! [NSObject : AnyObject]?, error: &error)
+            do {
+                try coordinator!.addPersistentStoreWithType(NSSQLiteStoreType, configuration: nil, URL: self.currentStoreURL(), options: self.storeOptions as! [NSObject : AnyObject]?)
+            } catch var error1 as NSError {
+                error = error1
+            } catch {
+                fatalError()
+            }
         }
         
         if shouldFail || (error != nil) {
@@ -88,10 +107,22 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSUserNotificationCenterDele
             //NSApplication.sharedApplication().presentError(error!)
             NSLog("Error: %@", error!)
             
-            fileManager.createDirectoryAtPath(self.applicationDocumentsDirectory.path!, withIntermediateDirectories: true, attributes: nil, error: &error)
+            do {
+                try fileManager.createDirectoryAtPath(self.applicationDocumentsDirectory.path!, withIntermediateDirectories: true, attributes: nil)
+            } catch var error1 as NSError {
+                error = error1
+            } catch {
+                fatalError()
+            }
             
             coordinator = NSPersistentStoreCoordinator(managedObjectModel: self.managedObjectModel)
-            coordinator!.addPersistentStoreWithType(NSSQLiteStoreType, configuration: nil, URL: self.currentStoreURL(), options: self.storeOptions as! [NSObject : AnyObject]?, error: &error)
+            do {
+                try coordinator!.addPersistentStoreWithType(NSSQLiteStoreType, configuration: nil, URL: self.currentStoreURL(), options: self.storeOptions as! [NSObject : AnyObject]?)
+            } catch var error1 as NSError {
+                error = error1
+            } catch {
+                fatalError()
+            }
         }
 
         return coordinator
@@ -118,7 +149,11 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSUserNotificationCenterDele
             }
             var error: NSError? = nil
             if moc.hasChanges {
-                moc.save(&error)
+                do {
+                    try moc.save()
+                } catch let error1 as NSError {
+                    error = error1
+                }
                 let nserror = error! as NSError
                 NSLog("Unresolved error \(nserror), \(nserror.userInfo)")
                 abort()
@@ -150,7 +185,11 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSUserNotificationCenterDele
             
             var error: NSError? = nil
 
-            moc.save(&error)
+            do {
+                try moc.save()
+            } catch let error1 as NSError {
+                error = error1
+            }
 
             if ( error != nil ) {
                 let result = sender.presentError(error!)
@@ -206,7 +245,11 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSUserNotificationCenterDele
         if ( newStore != nil ) {
             var error: NSError? = nil
             
-            self.persistentStoreCoordinator?.removePersistentStore(newStore!, error: &error)
+            do {
+                try self.persistentStoreCoordinator?.removePersistentStore(newStore!)
+            } catch let error1 as NSError {
+                error = error1
+            }
             
             if ( error != nil ) {
                 NSLog("Unresolved error while removing persistent store \(error), \(error?.userInfo)")
@@ -215,7 +258,11 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSUserNotificationCenterDele
         
         var error: NSError? = nil
         
-        self.persistentStoreCoordinator?.addPersistentStoreWithType(NSSQLiteStoreType, configuration: nil, URL: self.currentStoreURL(), options:self.storeOptions as! [NSObject : AnyObject]?, error: &error)
+        do {
+            try self.persistentStoreCoordinator?.addPersistentStoreWithType(NSSQLiteStoreType, configuration: nil, URL: self.currentStoreURL(), options:self.storeOptions as! [NSObject : AnyObject]?)
+        } catch let error1 as NSError {
+            error = error1
+        }
     }
 
     // Set/get default settings
@@ -287,7 +334,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSUserNotificationCenterDele
     func setiCloudStartSyncDate() {
         let iCloudSettings: NSMutableDictionary = self.settings.objectForKey("iCloud.osx")?.mutableCopy() as! NSMutableDictionary
     
-        print("Set the sync start date to now")
+        print("Set the sync start date to now", terminator: "")
     
         // Set the sync start date to now
         iCloudSettings.setValue(NSDate(), forKey:"lastSyncStart")
@@ -299,7 +346,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSUserNotificationCenterDele
     func setiCloudEndSyncDate() {
         let iCloudSettings: NSMutableDictionary = self.settings.objectForKey("iCloud.osx")?.mutableCopy() as! NSMutableDictionary
     
-        print("Set the sync end date to now")
+        print("Set the sync end date to now", terminator: "")
     
         // Set the sync end date to now
         iCloudSettings.setValue(NSDate(), forKey:"lastSuccessfulSync")
@@ -309,7 +356,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSUserNotificationCenterDele
     
     // Migrate data to iCloud
     func migrateDataToiCloud() {
-        print("Migrating data to iCloud")
+        print("Migrating data to iCloud", terminator: "")
     
         let tmpStoreOptions: NSMutableDictionary? = self.storeOptions?.mutableCopy() as! NSMutableDictionary?
     
@@ -325,7 +372,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSUserNotificationCenterDele
     
         let iCloudSettings: NSMutableDictionary = self.settings.objectForKey("iCloud.osx")!.mutableCopy() as! NSMutableDictionary
     
-        print("Set the last remote sync date to now")
+        print("Set the last remote sync date to now", terminator: "")
     
         // Set the last remote sync date to now
         iCloudSettings.setValue(NSDate(), forKey:"lastRemoteSync")
@@ -335,7 +382,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSUserNotificationCenterDele
     
     // Migrate data to Local
     func migrateDataToLocal() {
-        print("Migrating data to Local")
+        print("Migrating data to Local", terminator: "")
     
         let tmpStoreOptions: NSMutableDictionary? = self.storeOptions?.mutableCopy() as! NSMutableDictionary?
     
@@ -351,7 +398,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSUserNotificationCenterDele
         
         let iCloudSettings: NSMutableDictionary = self.settings.objectForKey("iCloud.osx")?.mutableCopy() as! NSMutableDictionary
     
-        print("Set the last local sync date to now")
+        print("Set the last local sync date to now", terminator: "")
     
         // Set the last local sync date to now
         iCloudSettings.setValue(NSDate(), forKey:"lastLocalUpdate")
@@ -361,7 +408,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSUserNotificationCenterDele
     
     // Remove all data
     func removeAllData() {
-        print("REMOVING ALL DATA!")
+        print("REMOVING ALL DATA!", terminator: "")
     
         let appDelegate = NSApplication.sharedApplication().delegate as! AppDelegate
         let context = appDelegate.managedObjectContext
@@ -376,14 +423,18 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSUserNotificationCenterDele
         
         var error: NSError? = nil
         
-        objects = context!.executeFetchRequest(request, error: &error) as! [NSManagedObject]
+        objects = (try! context!.executeFetchRequest(request)) as! [NSManagedObject]
         
         if ( error == nil ) {
             for object: NSManagedObject in objects {
                 context?.deleteObject(object)
             }
             
-            context?.save(&error)
+            do {
+                try context?.save()
+            } catch let error1 as NSError {
+                error = error1
+            }
         } else {
             NSLog("Error: %@", error!)
         }
@@ -396,14 +447,18 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSUserNotificationCenterDele
         
         objects = []
         
-        context!.executeFetchRequest(request, error:&error) as! [NSManagedObject]
+        (try! context!.executeFetchRequest(request)) as! [NSManagedObject]
         
         if ( error == nil ) {
             for object: NSManagedObject in objects {
                 context?.deleteObject(object)
             }
             
-            context?.save(&error)
+            do {
+                try context?.save()
+            } catch let error1 as NSError {
+                error = error1
+            }
         } else {
             NSLog("Error: %@", error!)
         }

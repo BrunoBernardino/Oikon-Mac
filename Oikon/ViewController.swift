@@ -80,8 +80,8 @@ class ViewController: NSViewController {
         
         var objects: NSArray
         
-        var error: NSError? = nil
-        objects = context!.executeFetchRequest(request, error: &error)!
+        let error: NSError? = nil
+        objects = try! context!.executeFetchRequest(request)
         
         if ( error != nil ) {
             objects = []
@@ -164,7 +164,11 @@ class ViewController: NSViewController {
         
         var error: NSError? = nil
         
-        contents.writeToFile(name.path!, atomically: true, encoding: NSASCIIStringEncoding, error: &error)
+        do {
+            try contents.writeToFile(name.path!, atomically: true, encoding: NSUTF8StringEncoding)
+        } catch let error1 as NSError {
+            error = error1
+        }
         
         if ( error == nil ) {
             // Notify the file was saved
@@ -196,7 +200,7 @@ class ViewController: NSViewController {
             if result == NSFileHandlingPanelOKButton {
                 let csvFileName: NSURL = panel.URL!
                 let csvFileData: NSData = NSData(contentsOfURL: csvFileName)!
-                let csvFileContents: NSString = NSString(data: csvFileData, encoding: NSASCIIStringEncoding)!
+                let csvFileContents: NSString = NSString(data: csvFileData, encoding: NSUTF8StringEncoding)!
                 
                 //NSLog("File contents:\n\n%@", csvFileContents)
                 
@@ -260,7 +264,7 @@ class ViewController: NSViewController {
         
         for csvRow in csvRows {
             // Skip header
-            if csvRow as! String == "Name,Type,Date,Value" {
+            if csvRow == "Name,Type,Date,Value" {
                 continue
             }
             
@@ -269,10 +273,10 @@ class ViewController: NSViewController {
             //
             // Parse values
             
-            let expenseName: NSString = csvData[0] as! NSString
+            let expenseName: NSString = csvData[0] as NSString
             var expenseType: NSString? = csvData[1] as? NSString
-            let expenseDate: NSDate = dateFormatter.dateFromString( csvData[2] as! String )!
-            let expenseValue: NSNumber = numberFormatter.numberFromString( csvData[3] as! String )!
+            let expenseDate: NSDate = dateFormatter.dateFromString( csvData[2] )!
+            let expenseValue: NSNumber = numberFormatter.numberFromString( csvData[3] )!
             
             // If the type is "uncategorized" (not translated on purpose), make it nil
             if ( expenseType == "uncategorized" ) {
@@ -282,19 +286,23 @@ class ViewController: NSViewController {
             //
             // Add expense
             
-            let newExpense: NSManagedObject = NSEntityDescription.insertNewObjectForEntityForName("Expense", inManagedObjectContext: context!) as! NSManagedObject
+            let newExpense: NSManagedObject = NSEntityDescription.insertNewObjectForEntityForName("Expense", inManagedObjectContext: context!) 
             newExpense.setValue(expenseValue, forKey: "value")
             newExpense.setValue(expenseName, forKey: "name")
             newExpense.setValue(expenseType, forKey: "type")
             newExpense.setValue(expenseDate, forKey: "date")
             
             var error: NSError? = nil
-            context!.save(&error)
+            do {
+                try context!.save()
+            } catch let error1 as NSError {
+                error = error1
+            }
             
             if ( error != nil ) {
                 NSLog("Error: %@", error!)
                 
-                self.showAlert(NSString(format:NSLocalizedString("There was an error adding an expense. Please confirm the value types match for line '%@'.", comment:""), csvRow as! String), window: self.view.window!)
+                self.showAlert(NSString(format:NSLocalizedString("There was an error adding an expense. Please confirm the value types match for line '%@'.", comment:""), csvRow ), window: self.view.window!)
             }
             
             // Add Expense Type if it doesn't exist
@@ -319,12 +327,16 @@ class ViewController: NSViewController {
         let appDelegate = NSApplication.sharedApplication().delegate as! AppDelegate
         let context = appDelegate.managedObjectContext
 
-        let newExpenseType: NSManagedObject = NSEntityDescription.insertNewObjectForEntityForName("ExpenseType", inManagedObjectContext: context!) as! NSManagedObject
+        let newExpenseType: NSManagedObject = NSEntityDescription.insertNewObjectForEntityForName("ExpenseType", inManagedObjectContext: context!) 
         
         newExpenseType.setValue(name, forKey: "name")
         
         var error: NSError? = nil
-        context!.save(&error)
+        do {
+            try context!.save()
+        } catch let error1 as NSError {
+            error = error1
+        }
         
         if ( error != nil ) {
             NSLog("Error: %@", error!)
@@ -353,8 +365,8 @@ class ViewController: NSViewController {
         
         var objects: NSArray
         
-        var error: NSError? = nil
-        objects = context!.executeFetchRequest(request, error: &error)!
+        let error: NSError? = nil
+        objects = try! context!.executeFetchRequest(request)
         
         if ( error != nil ) {
             objects = []
@@ -377,7 +389,7 @@ class ViewController: NSViewController {
     override func prepareForSegue(segue: NSStoryboardSegue, sender: AnyObject?) {
         // Assign each "side" view controllers to each one
         if segue.identifier == "pastExpensesOpen" {
-            let viewItems = segue.destinationController.splitViewItems as! [NSSplitViewItem]
+            let viewItems = segue.destinationController.splitViewItems as [NSSplitViewItem]
 
             let listController = viewItems[0].viewController as! ExpensesListViewController
             let sidebarController = viewItems[1].viewController as! ExpensesListSidebarViewController

@@ -90,7 +90,11 @@ class EditExpenseViewController: NSViewController {
         expenseBeingUpdated.setValue(expenseDate, forKey: "date")
         
         var error: NSError? = nil
-        context?.save(&error)
+        do {
+            try context?.save()
+        } catch let error1 as NSError {
+            error = error1
+        }
         
         if ( error == nil ) {
             //self.mainViewController.showAlert(NSLocalizedString("Your expense was updated successfully.", comment:""), window: self.view.window!)
@@ -122,7 +126,11 @@ class EditExpenseViewController: NSViewController {
             context?.deleteObject(expenseToRemove)
             
             var error: NSError? = nil
-            context?.save(&error)
+            do {
+                try context?.save()
+            } catch let error1 as NSError {
+                error = error1
+            }
             
             if ( error == nil ) {
                 // Delete from view

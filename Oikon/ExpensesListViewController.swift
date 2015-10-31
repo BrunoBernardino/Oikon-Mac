@@ -104,7 +104,7 @@ class ExpensesListViewController: NSViewController, NSTableViewDataSource, NSTab
         let dateFormatter = NSDateFormatter()
         let currentDate = NSDate()
         let currentCalendar = NSCalendar.currentCalendar()
-        let calendarUnits: NSCalendarUnit = NSCalendarUnit.CalendarUnitYear | NSCalendarUnit.CalendarUnitMonth | NSCalendarUnit.CalendarUnitDay
+        let calendarUnits: NSCalendarUnit = [NSCalendarUnit.Year, NSCalendarUnit.Month, NSCalendarUnit.Day]
 
         let dateComponents = currentCalendar.components(calendarUnits, fromDate: currentDate)
     
@@ -124,7 +124,7 @@ class ExpensesListViewController: NSViewController, NSTableViewDataSource, NSTab
         //
         // Set "to date"
         //
-        let daysRange: NSRange = currentCalendar.rangeOfUnit(NSCalendarUnit.CalendarUnitDay, inUnit: NSCalendarUnit.CalendarUnitMonth, forDate: currentDate)
+        let daysRange: NSRange = currentCalendar.rangeOfUnit(NSCalendarUnit.Day, inUnit: NSCalendarUnit.Month, forDate: currentDate)
         dateComponents.day = daysRange.length// Last day of the current month
         
         self.currentToDate = currentCalendar.dateFromComponents(dateComponents)
@@ -163,7 +163,7 @@ class ExpensesListViewController: NSViewController, NSTableViewDataSource, NSTab
     
         // Make start date's time = 00:00:00
         let currentCalendar = NSCalendar.currentCalendar()
-        let calendarUnits: NSCalendarUnit = NSCalendarUnit.CalendarUnitYear | NSCalendarUnit.CalendarUnitMonth | NSCalendarUnit.CalendarUnitDay | NSCalendarUnit.CalendarUnitHour | NSCalendarUnit.CalendarUnitMinute | NSCalendarUnit.CalendarUnitSecond
+        let calendarUnits: NSCalendarUnit = [NSCalendarUnit.Year, NSCalendarUnit.Month, NSCalendarUnit.Day, NSCalendarUnit.Hour, NSCalendarUnit.Minute, NSCalendarUnit.Second]
         let fromDateComponents = currentCalendar.components(calendarUnits, fromDate: self.currentFromDate)
     
         fromDateComponents.hour = 0
@@ -229,13 +229,13 @@ class ExpensesListViewController: NSViewController, NSTableViewDataSource, NSTab
         }
 
         // Add the predicate to the request
-        let finalPredicate: NSPredicate = NSCompoundPredicate.andPredicateWithSubpredicates(usedPredicates as AnyObject as! [NSPredicate])
+        let finalPredicate: NSPredicate = NSCompoundPredicate(andPredicateWithSubpredicates:usedPredicates as AnyObject as! [NSPredicate])
         request.predicate = finalPredicate
         
         var objects: NSArray
         
-        var error: NSError? = nil
-        objects = context!.executeFetchRequest(request, error: &error)!
+        let error: NSError? = nil
+        objects = try! context!.executeFetchRequest(request)
         
         if ( error != nil ) {
             objects = []
@@ -411,8 +411,8 @@ class ExpensesListViewController: NSViewController, NSTableViewDataSource, NSTab
         
         var objects: NSArray
         
-        var error: NSError? = nil
-        objects = context!.executeFetchRequest(request, error: &error)!
+        let error: NSError? = nil
+        objects = try! context!.executeFetchRequest(request)
         
         if ( error != nil ) {
             objects = []
@@ -467,7 +467,7 @@ class ExpensesListViewController: NSViewController, NSTableViewDataSource, NSTab
         usedPredicates.addObject(filterNamePredicate)
         
         // Add the predicate to the request
-        let finalPredicate: NSPredicate = NSCompoundPredicate.andPredicateWithSubpredicates(usedPredicates as AnyObject as! [NSPredicate])
+        let finalPredicate: NSPredicate = NSCompoundPredicate(andPredicateWithSubpredicates: usedPredicates as AnyObject as! [NSPredicate])
         request.predicate = finalPredicate
         
         //
@@ -476,8 +476,8 @@ class ExpensesListViewController: NSViewController, NSTableViewDataSource, NSTab
         
         var objects: NSArray
         
-        var error: NSError? = nil
-        objects = context!.executeFetchRequest(request, error: &error)!
+        let error: NSError? = nil
+        objects = try! context!.executeFetchRequest(request)
         
         if ( error != nil ) {
             objects = []

@@ -83,14 +83,18 @@ class AddExpenseViewController: NSViewController {
         // Save object
         //
         
-        let newExpense: NSManagedObject = NSEntityDescription.insertNewObjectForEntityForName("Expense", inManagedObjectContext: context!) as! NSManagedObject
+        let newExpense: NSManagedObject = NSEntityDescription.insertNewObjectForEntityForName("Expense", inManagedObjectContext: context!) 
         newExpense.setValue(expenseValue, forKey: "value")
         newExpense.setValue(expenseName, forKey: "name")
         newExpense.setValue(expenseType, forKey: "type")
         newExpense.setValue(expenseDate, forKey: "date")
         
         var error: NSError? = nil
-        context?.save(&error)
+        do {
+            try context?.save()
+        } catch let error1 as NSError {
+            error = error1
+        }
         
         if ( error == nil ) {
             // Cleanup fields
@@ -173,8 +177,8 @@ class AddExpenseViewController: NSViewController {
         
         var objects: NSArray
         
-        var error: NSError? = nil
-        objects = context!.executeFetchRequest(request, error: &error)!
+        let error: NSError? = nil
+        objects = try! context!.executeFetchRequest(request)
         
         if ( error != nil ) {
             objects = []

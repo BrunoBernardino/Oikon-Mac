@@ -75,7 +75,11 @@ class EditExpenseTypeViewController: NSViewController {
         selectedExpenseType.setValue(expenseTypeName, forKey: "name")
         
         var error: NSError? = nil
-        context?.save(&error)
+        do {
+            try context?.save()
+        } catch let error1 as NSError {
+            error = error1
+        }
         
         if ( error == nil ) {
             // Refresh the table in the mainViewController
@@ -100,14 +104,18 @@ class EditExpenseTypeViewController: NSViewController {
         
         var objects: [NSManagedObject]
         
-        objects = context!.executeFetchRequest(request, error: &error) as! [NSManagedObject]
+        objects = (try! context!.executeFetchRequest(request)) as! [NSManagedObject]
         
         if ( error == nil ) {
             for object: NSManagedObject in objects {
                 object.setValue(self.nameText.stringValue, forKey: "type")
             }
             
-            context?.save(&error)
+            do {
+                try context?.save()
+            } catch let error1 as NSError {
+                error = error1
+            }
             
             // Refresh the table in the mainViewController
             self.mainViewController.getAllExpenseTypes()
@@ -135,7 +143,11 @@ class EditExpenseTypeViewController: NSViewController {
             context?.deleteObject(expenseTypeToRemove)
             
             var error: NSError? = nil
-            context?.save(&error)
+            do {
+                try context?.save()
+            } catch let error1 as NSError {
+                error = error1
+            }
             
             if ( error == nil ) {
                 // Delete from view
@@ -159,14 +171,18 @@ class EditExpenseTypeViewController: NSViewController {
             
             var objects: [NSManagedObject]
             
-            objects = context!.executeFetchRequest(request, error: &error) as! [NSManagedObject]
+            objects = (try! context!.executeFetchRequest(request)) as! [NSManagedObject]
             
             if ( error == nil ) {
                 for object: NSManagedObject in objects {
                     object.setValue(nil, forKey: "type")
                 }
                 
-                context?.save(&error)
+                do {
+                    try context?.save()
+                } catch let error1 as NSError {
+                    error = error1
+                }
                 
                 // Refresh the table in the mainViewController
                 self.mainViewController.getAllExpenseTypes()
