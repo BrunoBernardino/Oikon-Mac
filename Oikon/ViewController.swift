@@ -174,7 +174,7 @@ class ViewController: NSViewController {
             // Notify the file was saved
             let notification: NSUserNotification = NSUserNotification()
             notification.title = NSLocalizedString("CSV File saved!", comment:"")
-            notification.informativeText = NSString(format: NSLocalizedString("The file %@ was saved scucessfully.", comment:""), name.lastPathComponent!) as String
+            notification.informativeText = NSString(format: NSLocalizedString("The file %@ was saved successfully.", comment:""), name.lastPathComponent!) as String
             notification.soundName = NSUserNotificationDefaultSoundName
             
             NSUserNotificationCenter.defaultUserNotificationCenter().deliverNotification(notification)
