@@ -36,11 +36,24 @@ class AddExpenseViewController: NSViewController {
         var expenseType: NSString? = uncategorizedStringValue as NSString
         var expenseDate: Date = Date()// Default expense date to "now"
         
+        // Replace comma decimal to dot decimal
+        if (numberFormatter.currencyDecimalSeparator == ".") {
+            let tmpVal = self.valueText.stringValue.replacingOccurrences(of: ",", with: ".")
+            self.valueText.stringValue = tmpVal
+        }
+        
+        // Replace dot decimal to comma decimal
+        if (numberFormatter.currencyDecimalSeparator == ",") {
+            let tmpVal = self.valueText.stringValue.replacingOccurrences(of: ".", with: ",")
+            self.valueText.stringValue = tmpVal
+        }
+        
         // Avoid empty values crashing the code
         if let tmpExpenseValue: NSNumber = numberFormatter.number(from: self.valueText.stringValue) {
             expenseValue = tmpExpenseValue
         }
-        if let tmpExpenseName: NSString = self.nameText.stringValue as NSString? {
+        if let tmpExpenseName: NSString = self.nameText.stringValue.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)
+ as NSString? {
             expenseName = tmpExpenseName
         }
         if let tmpExpenseType: NSString = self.typeText.titleOfSelectedItem! as NSString? {

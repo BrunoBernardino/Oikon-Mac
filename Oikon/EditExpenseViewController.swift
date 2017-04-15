@@ -36,12 +36,24 @@ class EditExpenseViewController: NSViewController {
         var expenseType: NSString? = uncategorizedStringValue as NSString
         var expenseDate: Date = Date()// Default expense date to "now"
         
+        // Replace comma decimal to dot decimal
+        if (numberFormatter.currencyDecimalSeparator == ".") {
+            let tmpVal = self.valueText.stringValue.replacingOccurrences(of: ",", with: ".")
+            self.valueText.stringValue = tmpVal
+        }
+        
+        // Replace dot decimal to comma decimal
+        if (numberFormatter.currencyDecimalSeparator == ",") {
+            let tmpVal = self.valueText.stringValue.replacingOccurrences(of: ".", with: ",")
+            self.valueText.stringValue = tmpVal
+        }
+        
         // Avoid empty values crashing the code
         if let tmpExpenseValue: NSNumber = numberFormatter.number(from: self.valueText.stringValue) {
             expenseValue = tmpExpenseValue
         }
         if let tmpExpenseName: NSString = self.nameText.stringValue as NSString? {
-            expenseName = tmpExpenseName
+            expenseName = tmpExpenseName// We intentionally don't trim on update
         }
         if let tmpExpenseType: NSString = self.typeText.titleOfSelectedItem! as NSString? {
             expenseType = tmpExpenseType
@@ -56,7 +68,7 @@ class EditExpenseViewController: NSViewController {
         // START: Validate fields for common errors
         //
         
-        // Check if value is greater than 0
+        // Check if value is not 0
         if ( !expenseValue.boolValue ) {
             self.mainViewController.mainViewController.showAlert(NSLocalizedString("Please confirm the value of the expense.", comment:"") as NSString, window: self.view.window!)
             
