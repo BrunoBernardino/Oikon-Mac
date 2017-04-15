@@ -379,7 +379,9 @@ class ExpensesListViewController: NSViewController, NSTableViewDataSource, NSTab
         
         // Format Type
         if ( tableColumn!.identifier == "type" ) {
-            if ( stringValue == nil ) {
+            if let testing = stringValue as? String {
+                // Do nothing
+            } else {
                 stringValue = "—" as NSString
             }
         }
