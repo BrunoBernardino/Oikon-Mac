@@ -15,20 +15,20 @@ class ExpensesListViewController: NSViewController, NSTableViewDataSource, NSTab
     // Set default expenses array
     var expenses: NSMutableArray! = []
     var expenseTypes: NSMutableArray! = []
-    var currentFromDate: NSDate!
-    var currentToDate: NSDate!
+    var currentFromDate: Date!
+    var currentToDate: Date!
     var currentFilterName: NSString!
     var currentFilterTypes: NSMutableArray! = []
     let uncategorizedStringValue = NSLocalizedString("uncategorized", comment: "")
     
-    var settings: NSUserDefaults!
+    var settings: UserDefaults!
     
     var sidebarViewController: ExpensesListSidebarViewController!
     var mainViewController: ViewController!
     
     var selectedExpenseIndex: Int!
     
-    var lastiCloudFetch: NSDate?
+    var lastiCloudFetch: Date?
     
     @IBOutlet var fromDateText: NSDatePicker!
     @IBOutlet var toDateText: NSDatePicker!
@@ -36,7 +36,7 @@ class ExpensesListViewController: NSViewController, NSTableViewDataSource, NSTab
     @IBOutlet var expensesTableView: NSTableView!
 
     // From Date was changed
-    @IBAction func changedFromDate(sender: AnyObject) {
+    @IBAction func changedFromDate(_ sender: AnyObject) {
         self.currentFromDate = self.fromDateText.dateValue
         
         // Update Settings & UI
@@ -48,7 +48,7 @@ class ExpensesListViewController: NSViewController, NSTableViewDataSource, NSTab
     }
 
     // To Date was changed
-    @IBAction func changedToDate(sender: AnyObject) {
+    @IBAction func changedToDate(_ sender: AnyObject) {
         self.currentToDate = self.toDateText.dateValue
         
         // Update Settings & UI
@@ -64,7 +64,7 @@ class ExpensesListViewController: NSViewController, NSTableViewDataSource, NSTab
         // Do view setup here.
         
         // Listen for iCloud changes (after it's done)
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "iCloudDidUpdate:", name: NSPersistentStoreCoordinatorStoresDidChangeNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(ExpensesListViewController.iCloudDidUpdate(_:)), name: NSNotification.Name.NSPersistentStoreCoordinatorStoresDidChange, object: nil)
         
         self.thisController = self
         
@@ -80,8 +80,8 @@ class ExpensesListViewController: NSViewController, NSTableViewDataSource, NSTab
         }
         
         // Make sure the table loads data from and listens to this controller
-        expensesTableView.setDelegate(self)
-        expensesTableView.setDataSource(self)
+        expensesTableView.delegate = self
+        expensesTableView.dataSource = self
         
         // Make sure the date fields are listening to this controller for changes
         self.fromDateText.delegate = self
@@ -101,12 +101,12 @@ class ExpensesListViewController: NSViewController, NSTableViewDataSource, NSTab
     
     // Set from and to dates to the current month (first and last day)
     func setDefaultSearchDates() {
-        let dateFormatter = NSDateFormatter()
-        let currentDate = NSDate()
-        let currentCalendar = NSCalendar.currentCalendar()
-        let calendarUnits: NSCalendarUnit = [NSCalendarUnit.Year, NSCalendarUnit.Month, NSCalendarUnit.Day]
+        let dateFormatter = DateFormatter()
+        let currentDate = Date()
+        let currentCalendar = Calendar.current
+        let calendarUnits: NSCalendar.Unit = [NSCalendar.Unit.year, NSCalendar.Unit.month, NSCalendar.Unit.day]
 
-        let dateComponents = currentCalendar.components(calendarUnits, fromDate: currentDate)
+        var dateComponents = (currentCalendar as NSCalendar).components(calendarUnits, from: currentDate)
     
         // Set format for text views
         dateFormatter.dateFormat = NSLocalizedString("MMM, d yyyy", comment: "")
@@ -115,7 +115,7 @@ class ExpensesListViewController: NSViewController, NSTableViewDataSource, NSTab
         // Set "from date"
         //
         dateComponents.day = 1
-        self.currentFromDate = currentCalendar.dateFromComponents(dateComponents)
+        self.currentFromDate = currentCalendar.date(from: dateComponents)
     
         // Set "from date" text field
         //self.fromDateText.stringValue = dateFormatter.stringFromDate(self.currentFromDate)
@@ -124,10 +124,10 @@ class ExpensesListViewController: NSViewController, NSTableViewDataSource, NSTab
         //
         // Set "to date"
         //
-        let daysRange: NSRange = currentCalendar.rangeOfUnit(NSCalendarUnit.Day, inUnit: NSCalendarUnit.Month, forDate: currentDate)
+        let daysRange: NSRange = (currentCalendar as NSCalendar).range(of: NSCalendar.Unit.day, in: NSCalendar.Unit.month, for: currentDate)
         dateComponents.day = daysRange.length// Last day of the current month
         
-        self.currentToDate = currentCalendar.dateFromComponents(dateComponents)
+        self.currentToDate = currentCalendar.date(from: dateComponents)
     
         // Set "to date" text
         //self.toDateText.stringValue = dateFormatter.stringFromDate(self.currentToDate)
@@ -136,12 +136,12 @@ class ExpensesListViewController: NSViewController, NSTableViewDataSource, NSTab
     
     // Get all expenses from a range (set in self.currentFromDate and self.currentToDate)
     func getAllExpenses() {
-        let appDelegate = NSApplication.sharedApplication().delegate as! AppDelegate
+        let appDelegate = NSApplication.shared().delegate as! AppDelegate
         let context = appDelegate.managedObjectContext
         
-        let entityDesc = NSEntityDescription.entityForName("Expense", inManagedObjectContext:context!)
+        let entityDesc = NSEntityDescription.entity(forEntityName: "Expense", in:context!)
     
-        let request = NSFetchRequest()
+        let request = NSFetchRequest<NSFetchRequestResult>()
         request.entity = entityDesc
     
         // Sort expenses by date
@@ -162,24 +162,24 @@ class ExpensesListViewController: NSViewController, NSTableViewDataSource, NSTab
         //
     
         // Make start date's time = 00:00:00
-        let currentCalendar = NSCalendar.currentCalendar()
-        let calendarUnits: NSCalendarUnit = [NSCalendarUnit.Year, NSCalendarUnit.Month, NSCalendarUnit.Day, NSCalendarUnit.Hour, NSCalendarUnit.Minute, NSCalendarUnit.Second]
-        let fromDateComponents = currentCalendar.components(calendarUnits, fromDate: self.currentFromDate)
+        let currentCalendar = Calendar.current
+        let calendarUnits: NSCalendar.Unit = [NSCalendar.Unit.year, NSCalendar.Unit.month, NSCalendar.Unit.day, NSCalendar.Unit.hour, NSCalendar.Unit.minute, NSCalendar.Unit.second]
+        var fromDateComponents = (currentCalendar as NSCalendar).components(calendarUnits, from: self.currentFromDate)
     
         fromDateComponents.hour = 0
         fromDateComponents.minute = 0
         fromDateComponents.second = 0
 
-        self.currentFromDate = currentCalendar.dateFromComponents(fromDateComponents)
+        self.currentFromDate = currentCalendar.date(from: fromDateComponents)
     
         // Make end date's time = 23:59:59
-        let toDateComponents = currentCalendar.components(calendarUnits, fromDate: self.currentToDate)
+        var toDateComponents = (currentCalendar as NSCalendar).components(calendarUnits, from: self.currentToDate)
     
         toDateComponents.hour = 23
         toDateComponents.minute = 59
         toDateComponents.second = 59
         
-        self.currentToDate = currentCalendar.dateFromComponents(toDateComponents)
+        self.currentToDate = currentCalendar.date(from: toDateComponents)
     
         //
         // Update search settings and search
@@ -190,9 +190,9 @@ class ExpensesListViewController: NSViewController, NSTableViewDataSource, NSTab
         let usedPredicates = NSMutableArray()
     
         // Add dates to search
-        let datesPredicate = NSPredicate(format: "(date >= %@) and (date <= %@)", self.currentFromDate, self.currentToDate)
+        let datesPredicate = NSPredicate(format: "(date >= %@) and (date <= %@)", self.currentFromDate! as NSDate, self.currentToDate! as NSDate)
         
-        usedPredicates.addObject(datesPredicate)
+        usedPredicates.add(datesPredicate)
 
         // Add any self.currentFilterTypes to search
         let filterTypesPredicate: NSPredicate
@@ -200,7 +200,7 @@ class ExpensesListViewController: NSViewController, NSTableViewDataSource, NSTab
         if ( self.currentFilterTypes.count > 0 ) {
             let uncategorizedText = NSLocalizedString("uncategorized", comment: "")
             
-            let hasUncategorized:Bool = self.currentFilterTypes.containsObject(uncategorizedText)
+            let hasUncategorized:Bool = self.currentFilterTypes.contains(uncategorizedText)
             
             // Parse the array, removing "uncategorized"
             let parsedFilterTypes = mainViewController.parseFilterTypes(self.currentFilterTypes)
@@ -217,7 +217,7 @@ class ExpensesListViewController: NSViewController, NSTableViewDataSource, NSTab
                 filterTypesPredicate = NSPredicate(format: "(type = nil)")
             }
             
-            usedPredicates.addObject(filterTypesPredicate)
+            usedPredicates.add(filterTypesPredicate)
         }
     
         // Add any self.currentFilterName to search
@@ -225,7 +225,7 @@ class ExpensesListViewController: NSViewController, NSTableViewDataSource, NSTab
         if ( self.currentFilterName.length > 0 ) {
             filterNamePredicate = NSPredicate(format: "(name CONTAINS[cd] %@)", self.currentFilterName)
     
-            usedPredicates.addObject(filterNamePredicate)
+            usedPredicates.add(filterNamePredicate)
         }
 
         // Add the predicate to the request
@@ -235,7 +235,7 @@ class ExpensesListViewController: NSViewController, NSTableViewDataSource, NSTab
         var objects: NSArray
         
         let error: NSError? = nil
-        objects = try! context!.executeFetchRequest(request)
+        objects = try! context!.fetch(request) as NSArray
         
         if ( error != nil ) {
             objects = []
@@ -254,7 +254,7 @@ class ExpensesListViewController: NSViewController, NSTableViewDataSource, NSTab
     
     // Fetch search settings
     func fetchSearchSettings() {
-        self.settings = NSUserDefaults.standardUserDefaults()
+        self.settings = UserDefaults.standard
         self.settings.synchronize()
         
         var shouldUpdateUI:Bool = false
@@ -263,12 +263,12 @@ class ExpensesListViewController: NSViewController, NSTableViewDataSource, NSTab
         // Dates
         //
         
-        if let currentSearchFromDate = self.settings.valueForKey("searchFromDate.osx") as? NSDate {
+        if let currentSearchFromDate = self.settings.value(forKey: "searchFromDate.osx") as? Date {
             self.currentFromDate = currentSearchFromDate
             shouldUpdateUI = true
         }
 
-        if let currentSearchToDate = self.settings.valueForKey("searchToDate.osx") as? NSDate {
+        if let currentSearchToDate = self.settings.value(forKey: "searchToDate.osx") as? Date {
             self.currentToDate = currentSearchToDate
             shouldUpdateUI = true
         }
@@ -277,7 +277,7 @@ class ExpensesListViewController: NSViewController, NSTableViewDataSource, NSTab
         // Filter Types
         //
         
-        if let filterTypes = self.settings.valueForKey("filterTypes.osx") as? NSArray {
+        if let filterTypes = self.settings.value(forKey: "filterTypes.osx") as? NSArray {
             self.currentFilterTypes = NSMutableArray(array: filterTypes as [AnyObject], copyItems: true)
             shouldUpdateUI = true
         } else {
@@ -288,7 +288,7 @@ class ExpensesListViewController: NSViewController, NSTableViewDataSource, NSTab
         // Filter Name
         //
         
-        if let filterName = self.settings.valueForKey("filterName.osx") as? NSString {
+        if let filterName = self.settings.value(forKey: "filterName.osx") as? NSString {
             self.currentFilterName = filterName
             shouldUpdateUI = true
         } else {
@@ -306,7 +306,7 @@ class ExpensesListViewController: NSViewController, NSTableViewDataSource, NSTab
     
     // Update search settings
     func updateSearchSettings() {
-        self.settings = NSUserDefaults.standardUserDefaults()
+        self.settings = UserDefaults.standard
         self.settings.synchronize()
         
         self.settings.setValue(self.currentFromDate, forKey: "searchFromDate.osx")
@@ -317,7 +317,7 @@ class ExpensesListViewController: NSViewController, NSTableViewDataSource, NSTab
     
     // Update search labels & views
     func updateSearchLabelsAndViews() {
-        let dateFormatter = NSDateFormatter()
+        let dateFormatter = DateFormatter()
     
         // Set format for text views
         dateFormatter.dateFormat = NSLocalizedString("MMM, d yyyy", comment: "")
@@ -344,43 +344,45 @@ class ExpensesListViewController: NSViewController, NSTableViewDataSource, NSTab
         }
     }
     
-    func numberOfRowsInTableView(aTableView: NSTableView) -> Int {
+    func numberOfRows(in aTableView: NSTableView) -> Int {
         let numberOfRows:Int = self.expenses.count
         return numberOfRows
     }
     
     // Format & Display Row Cells
-    func tableView(tableView: NSTableView, viewForTableColumn tableColumn: NSTableColumn?, row: Int) -> NSView? {
+    func tableView(_ tableView: NSTableView, viewFor tableColumn: NSTableColumn?, row: Int) -> NSView? {
         
         let cellIdentifier = NSString(format: "%@Cell", tableColumn!.identifier) as String!
         
-        let result: NSTableCellView = self.expensesTableView.makeViewWithIdentifier(cellIdentifier, owner: self.expensesTableView) as! NSTableCellView
+        let result: NSTableCellView = self.expensesTableView.make(withIdentifier: cellIdentifier!, owner: self.expensesTableView) as! NSTableCellView
         
-        var stringValue: AnyObject? = self.expenses.objectAtIndex( row ).valueForKey( tableColumn!.identifier )
+        var stringValue: AnyObject? = (self.expenses.object( at: row ) as AnyObject).value( forKey: tableColumn!.identifier ) as AnyObject
         
         // Format Value
         if ( tableColumn!.identifier == "value" ) {
-            let numberFormatter = NSNumberFormatter()
-            numberFormatter.locale = NSLocale.currentLocale()
-            numberFormatter.numberStyle = NSNumberFormatterStyle.DecimalStyle
+            let numberFormatter = NumberFormatter()
+            numberFormatter.locale = Locale.current
+            numberFormatter.numberStyle = NumberFormatter.Style.decimal
             
-            stringValue = NSString(format:"%@", numberFormatter.stringFromNumber(NSNumber(float: stringValue as! Float))!)
+            stringValue = NSString(format:"%@", numberFormatter.string(from: NSNumber(value: stringValue as! Float as Float))!)
         }
         
         // Format Date
         if ( tableColumn!.identifier == "date" ) {
-            let dateFormatter = NSDateFormatter()
+            let dateFormatter = DateFormatter()
             dateFormatter.dateFormat = NSLocalizedString("MMM, d", comment:"")
-            let locale = NSLocale(localeIdentifier: NSLocalizedString("en_US", comment:""))
+            let locale = Locale(identifier: NSLocalizedString("en_US", comment:""))
             dateFormatter.locale = locale
             
-            stringValue = dateFormatter.stringFromDate(stringValue as! NSDate)
+            stringValue = dateFormatter.string(from: stringValue! as! Date) as NSString
         }
         
         // Format Type
         if ( tableColumn!.identifier == "type" ) {
-            if ( stringValue == nil ) {
-                stringValue = "—"
+            if let testing = stringValue as? String {
+                // Do nothing
+            } else {
+                stringValue = "—" as NSString
             }
         }
         
@@ -391,12 +393,12 @@ class ExpensesListViewController: NSViewController, NSTableViewDataSource, NSTab
     
     // Get all expense types
     func getAllExpenseTypes() {
-        let appDelegate = NSApplication.sharedApplication().delegate as! AppDelegate
+        let appDelegate = NSApplication.shared().delegate as! AppDelegate
         let context = appDelegate.managedObjectContext
         
-        let entityDesc = NSEntityDescription.entityForName("ExpenseType", inManagedObjectContext:context!)
+        let entityDesc = NSEntityDescription.entity(forEntityName: "ExpenseType", in:context!)
         
-        let request = NSFetchRequest()
+        let request = NSFetchRequest<NSFetchRequestResult>()
         request.entity = entityDesc
         
         // Sort expenses by name
@@ -412,7 +414,7 @@ class ExpensesListViewController: NSViewController, NSTableViewDataSource, NSTab
         var objects: NSArray
         
         let error: NSError? = nil
-        objects = try! context!.executeFetchRequest(request)
+        objects = try! context!.fetch(request) as NSArray
         
         if ( error != nil ) {
             objects = []
@@ -422,7 +424,7 @@ class ExpensesListViewController: NSViewController, NSTableViewDataSource, NSTab
         
         // Add Uncategorized on the beginning of the array
         let uncategorizedObject: [String: String] = [ "name": uncategorizedStringValue ]
-        objectsCopy.insertObject( uncategorizedObject, atIndex: 0)
+        objectsCopy.insert( uncategorizedObject, at: 0)
         
         if ( objectsCopy.count == 0 ) {
             /*let alertView = NSAlert()
@@ -440,31 +442,31 @@ class ExpensesListViewController: NSViewController, NSTableViewDataSource, NSTab
     }
     
     // Get a sum of all expenses for a given expense type (between dates)
-    func getExpenseTypeSum( expenseTypeName: NSString ) -> Float {
-        let appDelegate = NSApplication.sharedApplication().delegate as! AppDelegate
+    func getExpenseTypeSum( _ expenseTypeName: NSString ) -> Float {
+        let appDelegate = NSApplication.shared().delegate as! AppDelegate
         let context = appDelegate.managedObjectContext
         
-        let entityDesc = NSEntityDescription.entityForName("Expense", inManagedObjectContext:context!)
+        let entityDesc = NSEntityDescription.entity(forEntityName: "Expense", in:context!)
         
-        let request = NSFetchRequest()
+        let request = NSFetchRequest<NSFetchRequestResult>()
         request.entity = entityDesc
         
         let usedPredicates = NSMutableArray()
         
         // Add dates to search
-        let datesPredicate = NSPredicate(format: "(date >= %@) and (date <= %@)", self.currentFromDate, self.currentToDate)
+        let datesPredicate = NSPredicate(format: "(date >= %@) and (date <= %@)", self.currentFromDate as NSDate, self.currentToDate as NSDate)
         
-        usedPredicates.addObject(datesPredicate)
+        usedPredicates.add(datesPredicate)
         
         // Add expense type name to search
         var filterNamePredicate: NSPredicate = NSPredicate(format: "(type =[c] %@)", expenseTypeName)
         
         // Search for nil when trying to find uncategorized
-        if ( expenseTypeName == uncategorizedStringValue ) {
+        if ( expenseTypeName as String == uncategorizedStringValue ) {
             filterNamePredicate = NSPredicate(format: "(type = nil)")
         }
         
-        usedPredicates.addObject(filterNamePredicate)
+        usedPredicates.add(filterNamePredicate)
         
         // Add the predicate to the request
         let finalPredicate: NSPredicate = NSCompoundPredicate(andPredicateWithSubpredicates: usedPredicates as AnyObject as! [NSPredicate])
@@ -477,7 +479,7 @@ class ExpensesListViewController: NSViewController, NSTableViewDataSource, NSTab
         var objects: NSArray
         
         let error: NSError? = nil
-        objects = try! context!.executeFetchRequest(request)
+        objects = try! context!.fetch(request) as NSArray
         
         if ( error != nil ) {
             objects = []
@@ -486,13 +488,13 @@ class ExpensesListViewController: NSViewController, NSTableViewDataSource, NSTab
         var total: Float = 0
         
         for object in objects {
-            total += object.valueForKey("value") as! Float
+            total += (object as AnyObject).value(forKey: "value") as! Float
         }
         
         return total
     }
     
-    override func prepareForSegue(segue: NSStoryboardSegue, sender: AnyObject?) {
+    override func prepare(for segue: NSStoryboardSegue, sender: Any?) {
         // Assign mainViewController
         if segue.identifier == "editExpense" {
             let viewController = segue.destinationController as! EditExpenseViewController
@@ -502,7 +504,7 @@ class ExpensesListViewController: NSViewController, NSTableViewDataSource, NSTab
     }
     
     // Clicking on a row to view an expense
-    @IBAction func showExpense(sender: AnyObject) {
+    @IBAction func showExpense(_ sender: AnyObject) {
         let selectedRowIndex = self.expensesTableView.selectedRow
         
         // If the index is -1 means nothing is selected, but this event was triggered still
@@ -511,12 +513,12 @@ class ExpensesListViewController: NSViewController, NSTableViewDataSource, NSTab
             self.selectedExpenseIndex = selectedRowIndex
             
             // Show popover
-            self.performSegueWithIdentifier("editExpense", sender: self)
+            self.performSegue(withIdentifier: "editExpense", sender: self)
         }
     }
     
     // iCloud just finished updating
-    @IBAction func iCloudDidUpdate( sender: AnyObject? ) {
+    @IBAction func iCloudDidUpdate( _ sender: AnyObject? ) {
         // TODO: This is causing some unnecessary instability
         /*// This was creating an infinite loop, so we only allow this to run once every minute tops.
         let codeHasRunInThePastMinute: Bool

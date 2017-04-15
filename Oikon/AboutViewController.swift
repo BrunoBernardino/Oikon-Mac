@@ -17,13 +17,13 @@ class AboutViewController: NSViewController {
     }
         
     // Open oikon website
-    @IBAction func openWebsite( sender: AnyObject? ) {
-        NSWorkspace.sharedWorkspace().openURL(NSURL(string: "http://oikon.us")!)
+    @IBAction func openWebsite( _ sender: AnyObject? ) {
+        NSWorkspace.shared().open(URL(string: "https://oikon.net")!)
     }
     
     // Open support email
-    @IBAction func openSupportEmail( sender: AnyObject? ) {
-        NSWorkspace.sharedWorkspace().openURL(NSURL(string: "mailto:hello@emotionloop.com")!)
+    @IBAction func openSupportEmail( _ sender: AnyObject? ) {
+        NSWorkspace.shared().open(URL(string: "mailto:hello@emotionloop.com")!)
     }
 }
 

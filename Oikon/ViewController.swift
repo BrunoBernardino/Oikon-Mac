@@ -18,58 +18,58 @@ class ViewController: NSViewController {
         // Do any additional setup after loading the view.
         self.thisController = self
         
-        let application = NSApplication.sharedApplication()
+        let application = NSApplication.shared()
         let fileString = NSLocalizedString("File", comment:"")
 
         let preferencesString = NSLocalizedString("Preferences…", comment:"")
         let exportString = NSLocalizedString("Export CSV…", comment:"")
         let importString = NSLocalizedString("Import CSV…", comment:"")
         
-        let oikonMenuItem = application.mainMenu?.itemWithTitle("Oikon")!
-        let fileMenuItem = application.mainMenu?.itemWithTitle(fileString)!
+        let oikonMenuItem = application.mainMenu?.item(withTitle: "Oikon")!
+        let fileMenuItem = application.mainMenu?.item(withTitle: fileString)!
 
-        let preferencesMenuItem = (oikonMenuItem!.submenu?.itemWithTitle(preferencesString))!
-        let exportMenuItem = (fileMenuItem!.submenu?.itemWithTitle(exportString))!
-        let importMenuItem = (fileMenuItem!.submenu?.itemWithTitle(importString))!
+        let preferencesMenuItem = (oikonMenuItem!.submenu?.item(withTitle: preferencesString))!
+        let exportMenuItem = (fileMenuItem!.submenu?.item(withTitle: exportString))!
+        let importMenuItem = (fileMenuItem!.submenu?.item(withTitle: importString))!
         
         // Add action to "Preferences..." menu item
-        preferencesMenuItem.action = Selector("openPreferences:")
-        preferencesMenuItem.enabled = true
+        preferencesMenuItem.action = #selector(ViewController.openPreferences(_:))
+        preferencesMenuItem.isEnabled = true
         preferencesMenuItem.target = self
         
         // Add action to "Export CSV..." menu item
-        exportMenuItem.action = Selector("exportCSV:")
-        exportMenuItem.enabled = true
+        exportMenuItem.action = #selector(ViewController.exportCSV(_:))
+        exportMenuItem.isEnabled = true
         exportMenuItem.target = self
         
         // Add action to "Import CSV..." menu item
-        importMenuItem.action = Selector("importCSV:")
-        importMenuItem.enabled = true
+        importMenuItem.action = #selector(ViewController.importCSV(_:))
+        importMenuItem.isEnabled = true
         importMenuItem.target = self
     }
     
     // Formats the date for the CSV file
-    func formatDateForCSV( date: NSDate ) -> NSString {
-        let dateFormatter = NSDateFormatter()
-        let locale = NSLocale(localeIdentifier: "en_US")
+    func formatDateForCSV( _ date: Date ) -> NSString {
+        let dateFormatter = DateFormatter()
+        let locale = Locale(identifier: "en_US")
 
         dateFormatter.locale = locale
-        dateFormatter.dateStyle = NSDateFormatterStyle.ShortStyle
+        dateFormatter.dateStyle = DateFormatter.Style.short
         dateFormatter.dateFormat = "yyyy-MM-dd"
 
-        let formattedDate = dateFormatter.stringFromDate(date)
+        let formattedDate = dateFormatter.string(from: date)
 
-        return formattedDate
+        return formattedDate as NSString
     }
     
     // Get all expenses, for CSV
     func getAllExpenses() -> [NSManagedObject] {
-        let appDelegate = NSApplication.sharedApplication().delegate as! AppDelegate
+        let appDelegate = NSApplication.shared().delegate as! AppDelegate
         let context = appDelegate.managedObjectContext
         
-        let entityDesc = NSEntityDescription.entityForName("Expense", inManagedObjectContext:context!)
+        let entityDesc = NSEntityDescription.entity(forEntityName: "Expense", in:context!)
         
-        let request = NSFetchRequest()
+        let request = NSFetchRequest<NSFetchRequestResult>()
         request.entity = entityDesc
         
         // Sort expenses by date
@@ -81,7 +81,7 @@ class ViewController: NSViewController {
         var objects: NSArray
         
         let error: NSError? = nil
-        objects = try! context!.executeFetchRequest(request)
+        objects = try! context!.fetch(request) as NSArray
         
         if ( error != nil ) {
             objects = []
@@ -95,44 +95,44 @@ class ViewController: NSViewController {
         var fileContents:NSString = ""
         
         // Add Header
-        fileContents = fileContents.stringByAppendingString("Name,Type,Date,Value")
+        fileContents = fileContents.appending("Name,Type,Date,Value") as NSString
 
         let expenses = self.getAllExpenses()
 
         for expense: NSManagedObject in expenses {
             // Parse the values for text from the received object
-            var expenseValue: NSString = NSString(format: "%0.2f", expense.valueForKey("value")!.floatValue)
-            var expenseName: NSString = expense.valueForKey("name")! as! NSString
+            var expenseValue: NSString = NSString(format: "%0.2f", (expense.value(forKey: "value")! as AnyObject).floatValue)
+            var expenseName: NSString = expense.value(forKey: "name")! as! NSString
             var expenseType: NSString
-            if expense.valueForKey("type") != nil {
-                expenseType = expense.valueForKey("type")! as! NSString
+            if expense.value(forKey: "type") != nil {
+                expenseType = expense.value(forKey: "type")! as! NSString
             } else {
                 // Show "uncategorized" if nothing is set
                 expenseType = "uncategorized"// This is not translated on purpose, so it's a "standard" for the CSV
             }
-            var expenseDate = self.formatDateForCSV(expense.valueForKey("date")! as! NSDate)
+            var expenseDate = self.formatDateForCSV(expense.value(forKey: "date")! as! Date)
             
             // parse commas, new lines, and quotes for CSV
-            expenseName = expenseName.stringByReplacingOccurrencesOfString(",", withString: ";")
-            expenseName = expenseName.stringByReplacingOccurrencesOfString("\n", withString: " ")
-            expenseName = expenseName.stringByReplacingOccurrencesOfString("\"", withString: "'")
+            expenseName = expenseName.replacingOccurrences(of: ",", with: ";") as NSString
+            expenseName = expenseName.replacingOccurrences(of: "\n", with: " ") as NSString
+            expenseName = expenseName.replacingOccurrences(of: "\"", with: "'") as NSString
             
-            expenseType = expenseType.stringByReplacingOccurrencesOfString(",", withString: ";")
-            expenseType = expenseType.stringByReplacingOccurrencesOfString("\n", withString: " ")
-            expenseType = expenseType.stringByReplacingOccurrencesOfString("\"", withString: "'")
+            expenseType = expenseType.replacingOccurrences(of: ",", with: ";") as NSString
+            expenseType = expenseType.replacingOccurrences(of: "\n", with: " ") as NSString
+            expenseType = expenseType.replacingOccurrences(of: "\"", with: "'") as NSString
             
-            expenseDate = expenseDate.stringByReplacingOccurrencesOfString(",", withString: ";")
-            expenseDate = expenseDate.stringByReplacingOccurrencesOfString("\n", withString: " ")
-            expenseDate = expenseDate.stringByReplacingOccurrencesOfString("\"", withString: "'")
+            expenseDate = expenseDate.replacingOccurrences(of: ",", with: ";") as NSString
+            expenseDate = expenseDate.replacingOccurrences(of: "\n", with: " ") as NSString
+            expenseDate = expenseDate.replacingOccurrences(of: "\"", with: "'") as NSString
             
-            expenseValue = expenseValue.stringByReplacingOccurrencesOfString(",", withString: ";")
-            expenseValue = expenseValue.stringByReplacingOccurrencesOfString("\n", withString: " ")
-            expenseValue = expenseValue.stringByReplacingOccurrencesOfString("\"", withString: "'")
+            expenseValue = expenseValue.replacingOccurrences(of: ",", with: ";") as NSString
+            expenseValue = expenseValue.replacingOccurrences(of: "\n", with: " ") as NSString
+            expenseValue = expenseValue.replacingOccurrences(of: "\"", with: "'") as NSString
             
             let rowForExpense = NSString(format:"\n%@,%@,%@,%@", expenseName, expenseType, expenseDate, expenseValue)
             
             // Append string to file contents
-            fileContents = fileContents.stringByAppendingString(rowForExpense as String)
+            fileContents = fileContents.appending(rowForExpense as String) as NSString
         }
         
         //NSLog("Final file contents:\n\n%@", fileContents);
@@ -141,7 +141,7 @@ class ViewController: NSViewController {
     }
     
     // Export CSV...
-    func exportCSV( sender: AnyObject? ) {
+    func exportCSV( _ sender: AnyObject? ) {
         // Show panel to select a directory
         let panel: NSOpenPanel = NSOpenPanel()
         panel.allowsMultipleSelection = false
@@ -149,9 +149,9 @@ class ViewController: NSViewController {
         panel.canChooseFiles = false
         panel.prompt = NSLocalizedString("Choose", comment: "")
         panel.title = NSLocalizedString("Select a directory to export the CSV file into.", comment: "")
-        panel.beginWithCompletionHandler { (result) -> Void in
+        panel.begin { (result) -> Void in
             if result == NSFileHandlingPanelOKButton {
-                let csvFileName: NSURL = panel.URL!.URLByAppendingPathComponent(NSString(format:"oikon-export-%d.csv", Int(NSDate().timeIntervalSince1970)) as String)
+                let csvFileName: URL = panel.url!.appendingPathComponent(NSString(format:"oikon-export-%d.csv", Int(Date().timeIntervalSince1970)) as String)
                 let csvFileContents = self.getCSVFileString()
                 
                 self.saveCSVFile(csvFileName, contents: csvFileContents)
@@ -160,12 +160,12 @@ class ViewController: NSViewController {
     }
     
     // Actually save the CSV file
-    func saveCSVFile( name: NSURL, contents: NSString ) {
+    func saveCSVFile( _ name: URL, contents: NSString ) {
         
         var error: NSError? = nil
         
         do {
-            try contents.writeToFile(name.path!, atomically: true, encoding: NSUTF8StringEncoding)
+            try contents.write(toFile: name.path, atomically: true, encoding: String.Encoding.utf8.rawValue)
         } catch let error1 as NSError {
             error = error1
         }
@@ -174,19 +174,19 @@ class ViewController: NSViewController {
             // Notify the file was saved
             let notification: NSUserNotification = NSUserNotification()
             notification.title = NSLocalizedString("CSV File saved!", comment:"")
-            notification.informativeText = NSString(format: NSLocalizedString("The file %@ was saved successfully.", comment:""), name.lastPathComponent!) as String
+            notification.informativeText = NSString(format: NSLocalizedString("The file %@ was saved successfully.", comment:"") as NSString, name.lastPathComponent) as String
             notification.soundName = NSUserNotificationDefaultSoundName
             
-            NSUserNotificationCenter.defaultUserNotificationCenter().deliverNotification(notification)
+            NSUserNotificationCenter.default.deliver(notification)
         } else {
             NSLog("Error: %@", error!)
             
-            self.showAlert(NSLocalizedString("There was an error saving the export.", comment:""), window: self.view.window!)
+            self.showAlert(NSLocalizedString("There was an error saving the export.", comment:"") as NSString, window: self.view.window!)
         }
     }
     
     // Import CSV...
-    func importCSV( sender: AnyObject? ) {
+    func importCSV( _ sender: AnyObject? ) {
         // Show panel to select a file
         let panel: NSOpenPanel = NSOpenPanel()
         panel.showsHiddenFiles = false
@@ -196,11 +196,11 @@ class ViewController: NSViewController {
         panel.allowedFileTypes = ["csv", "CSV"]
         panel.prompt = NSLocalizedString("Choose", comment: "")
         panel.title = NSLocalizedString("Choose the CSV file to import data from.", comment: "")
-        panel.beginWithCompletionHandler { (result) -> Void in
+        panel.begin { (result) -> Void in
             if result == NSFileHandlingPanelOKButton {
-                let csvFileName: NSURL = panel.URL!
-                let csvFileData: NSData = NSData(contentsOfURL: csvFileName)!
-                let csvFileContents: NSString = NSString(data: csvFileData, encoding: NSUTF8StringEncoding)!
+                let csvFileName: URL = panel.url!
+                let csvFileData: Data = try! Data(contentsOf: csvFileName)
+                let csvFileContents: NSString = NSString(data: csvFileData, encoding: String.Encoding.utf8.rawValue)!
                 
                 //NSLog("File contents:\n\n%@", csvFileContents)
                 
@@ -210,29 +210,29 @@ class ViewController: NSViewController {
     }
     
     // Actually import the CSV file
-    func importCSVFile( name: NSURL, contents: NSString ) {
-        let appDelegate = NSApplication.sharedApplication().delegate as! AppDelegate
+    func importCSVFile( _ name: URL, contents: NSString ) {
+        let appDelegate = NSApplication.shared().delegate as! AppDelegate
         let context = appDelegate.managedObjectContext
 
-        let locale = NSLocale(localeIdentifier: "en_US")
+        let locale = Locale(identifier: "en_US")
 
-        let dateFormatter = NSDateFormatter()
+        let dateFormatter = DateFormatter()
         dateFormatter.locale = locale
-        dateFormatter.dateStyle = NSDateFormatterStyle.ShortStyle
+        dateFormatter.dateStyle = DateFormatter.Style.short
         dateFormatter.dateFormat = "yyyy-MM-dd"
         
-        let numberFormatter = NSNumberFormatter()
+        let numberFormatter = NumberFormatter()
         numberFormatter.locale = locale
-        numberFormatter.numberStyle = NSNumberFormatterStyle.DecimalStyle
+        numberFormatter.numberStyle = NumberFormatter.Style.decimal
 
         // Ask if merge, replace, or cancel
         var action = "merge"
         let alertView = NSAlert()
         
-        alertView.addButtonWithTitle(NSLocalizedString("Cancel", comment: ""))
-        alertView.addButtonWithTitle(NSLocalizedString("Replace", comment: ""))
-        alertView.addButtonWithTitle(NSLocalizedString("Merge", comment: ""))
-        alertView.alertStyle = NSAlertStyle.CriticalAlertStyle
+        alertView.addButton(withTitle: NSLocalizedString("Cancel", comment: ""))
+        alertView.addButton(withTitle: NSLocalizedString("Replace", comment: ""))
+        alertView.addButton(withTitle: NSLocalizedString("Merge", comment: ""))
+        alertView.alertStyle = NSAlertStyle.critical
         
         alertView.messageText = NSLocalizedString("Do you want to replace all data (will remove everything before importing) or merge it? Duplicates might appear if you're merging.", comment:"")
         alertView.informativeText = NSLocalizedString("This action is irreversible.", comment:"")
@@ -260,7 +260,13 @@ class ViewController: NSViewController {
             appDelegate.removeAllData()
         }
         
-        let csvRows = contents.componentsSeparatedByString("\n")
+        let csvRows = contents.components(separatedBy: "\n")
+        
+        // Check if the first row matches the expected format, or error out
+        if csvRows[0] != "Name,Type,Date,Value" {
+            self.showAlert(NSLocalizedString("There was an error parsing the CSV file. Please make sure the first line is 'Name,Type,Date,Value', and the following lines follow that format with the values.", comment:"") as NSString, window: self.view.window!)
+            return
+        }
         
         for csvRow in csvRows {
             // Skip header
@@ -268,15 +274,15 @@ class ViewController: NSViewController {
                 continue
             }
             
-            let csvData = csvRow.componentsSeparatedByString(",")
+            let csvData = csvRow.components(separatedBy: ",")
             
             //
             // Parse values
             
             let expenseName: NSString = csvData[0] as NSString
-            var expenseType: NSString? = csvData[1] as? NSString
-            let expenseDate: NSDate = dateFormatter.dateFromString( csvData[2] )!
-            let expenseValue: NSNumber = numberFormatter.numberFromString( csvData[3] )!
+            var expenseType: NSString? = csvData[1] as NSString
+            let expenseDate: Date = dateFormatter.date( from: csvData[2] )!
+            let expenseValue: NSNumber = numberFormatter.number( from: csvData[3] )!
             
             // If the type is "uncategorized" (not translated on purpose), make it nil
             if ( expenseType == "uncategorized" ) {
@@ -286,7 +292,7 @@ class ViewController: NSViewController {
             //
             // Add expense
             
-            let newExpense: NSManagedObject = NSEntityDescription.insertNewObjectForEntityForName("Expense", inManagedObjectContext: context!) 
+            let newExpense: NSManagedObject = NSEntityDescription.insertNewObject(forEntityName: "Expense", into: context!) 
             newExpense.setValue(expenseValue, forKey: "value")
             newExpense.setValue(expenseName, forKey: "name")
             newExpense.setValue(expenseType, forKey: "type")
@@ -302,7 +308,7 @@ class ViewController: NSViewController {
             if ( error != nil ) {
                 NSLog("Error: %@", error!)
                 
-                self.showAlert(NSString(format:NSLocalizedString("There was an error adding an expense. Please confirm the value types match for line '%@'.", comment:""), csvRow ), window: self.view.window!)
+                self.showAlert(NSString(format:NSLocalizedString("There was an error adding an expense. Please confirm the value types match for line '%@'.", comment:"") as NSString, csvRow ), window: self.view.window!)
             }
             
             // Add Expense Type if it doesn't exist
@@ -316,18 +322,18 @@ class ViewController: NSViewController {
         // Notify the import has finished
         let notification: NSUserNotification = NSUserNotification()
         notification.title = NSLocalizedString("CSV File imported!", comment:"")
-        notification.informativeText = NSString(format: NSLocalizedString("The file %@ was imported successfully.", comment:""), name.lastPathComponent!) as String
+        notification.informativeText = NSString(format: NSLocalizedString("The file %@ was imported successfully.", comment:"") as NSString, name.lastPathComponent) as String
         notification.soundName = NSUserNotificationDefaultSoundName
         
-        NSUserNotificationCenter.defaultUserNotificationCenter().deliverNotification(notification)
+        NSUserNotificationCenter.default.deliver(notification)
     }
     
     // Add Expense Type
-    func addExpenseType( name: NSString ) {
-        let appDelegate = NSApplication.sharedApplication().delegate as! AppDelegate
+    func addExpenseType( _ name: NSString ) {
+        let appDelegate = NSApplication.shared().delegate as! AppDelegate
         let context = appDelegate.managedObjectContext
 
-        let newExpenseType: NSManagedObject = NSEntityDescription.insertNewObjectForEntityForName("ExpenseType", inManagedObjectContext: context!) 
+        let newExpenseType: NSManagedObject = NSEntityDescription.insertNewObject(forEntityName: "ExpenseType", into: context!) 
         
         newExpenseType.setValue(name, forKey: "name")
         
@@ -341,18 +347,18 @@ class ViewController: NSViewController {
         if ( error != nil ) {
             NSLog("Error: %@", error!)
             
-            self.showAlert(NSString(format:NSLocalizedString("There was an error adding your expense type. Please confirm the value types match for '%@'.", comment:""), name), window: self.view.window!)
+            self.showAlert(NSString(format:NSLocalizedString("There was an error adding your expense type. Please confirm the value types match for '%@'.", comment:"") as NSString, name), window: self.view.window!)
         }
     }
     
     // Check if an expense type name already exists
-    func expenseTypeExists( expenseTypeName: NSString ) -> Bool {
-        let appDelegate = NSApplication.sharedApplication().delegate as! AppDelegate
+    func expenseTypeExists( _ expenseTypeName: NSString ) -> Bool {
+        let appDelegate = NSApplication.shared().delegate as! AppDelegate
         let context = appDelegate.managedObjectContext
         
-        let entityDesc = NSEntityDescription.entityForName("ExpenseType", inManagedObjectContext:context!)
+        let entityDesc = NSEntityDescription.entity(forEntityName: "ExpenseType", in:context!)
         
-        let request = NSFetchRequest()
+        let request = NSFetchRequest<NSFetchRequestResult>()
         request.entity = entityDesc
         
         // Add expense type name to search
@@ -366,7 +372,7 @@ class ViewController: NSViewController {
         var objects: NSArray
         
         let error: NSError? = nil
-        objects = try! context!.executeFetchRequest(request)
+        objects = try! context!.fetch(request) as NSArray
         
         if ( error != nil ) {
             objects = []
@@ -376,20 +382,20 @@ class ViewController: NSViewController {
     }
     
     // Open settings (Preferences... menu item)
-    func openPreferences( sender: AnyObject? ) {
-        self.performSegueWithIdentifier("settings", sender: self)
+    func openPreferences( _ sender: AnyObject? ) {
+        self.performSegue(withIdentifier: "settings", sender: self)
     }
 
-    override var representedObject: AnyObject? {
+    override var representedObject: Any? {
         didSet {
         // Update the view, if already loaded.
         }
     }
 
-    override func prepareForSegue(segue: NSStoryboardSegue, sender: AnyObject?) {
+    override func prepare(for segue: NSStoryboardSegue, sender: Any?) {
         // Assign each "side" view controllers to each one
         if segue.identifier == "pastExpensesOpen" {
-            let viewItems = segue.destinationController.splitViewItems as [NSSplitViewItem]
+            let viewItems = (segue.destinationController as AnyObject).splitViewItems as [NSSplitViewItem]
 
             let listController = viewItems[0].viewController as! ExpensesListViewController
             let sidebarController = viewItems[1].viewController as! ExpensesListSidebarViewController
@@ -421,42 +427,42 @@ class ViewController: NSViewController {
     }
     
     // Change "uncategorized" with ""
-    func parseFilterTypes( filterTypes: NSMutableArray ) -> NSMutableArray {
+    func parseFilterTypes( _ filterTypes: NSMutableArray ) -> NSMutableArray {
         let parsedFilterTypes = NSMutableArray(array: filterTypes as [AnyObject], copyItems: true)
         
         let uncategorizedText = NSLocalizedString("uncategorized", comment: "")
         
-        let uncategorizedIndex = parsedFilterTypes.indexOfObject(uncategorizedText)
+        let uncategorizedIndex = parsedFilterTypes.index(of: uncategorizedText)
     
-        let hasUncategorized:Bool = parsedFilterTypes.containsObject(uncategorizedText)
+        let hasUncategorized:Bool = parsedFilterTypes.contains(uncategorizedText)
     
         // Check if the uncategorized exists in the array
         if ( hasUncategorized ) {
             // Remove item in the array
-            parsedFilterTypes.removeObjectAtIndex(uncategorizedIndex)
+            parsedFilterTypes.removeObject(at: uncategorizedIndex)
         }
     
         return parsedFilterTypes
     }
     
     // Show simple alert
-    func showAlert( message: NSString, window: NSWindow ) {
+    func showAlert( _ message: NSString, window: NSWindow ) {
         let alertView = NSAlert()
 
-        alertView.addButtonWithTitle(NSLocalizedString("OK", comment: ""))
+        alertView.addButton(withTitle: NSLocalizedString("OK", comment: ""))
         alertView.messageText = message as String
-        alertView.alertStyle = NSAlertStyle.WarningAlertStyle
+        alertView.alertStyle = NSAlertStyle.warning
 
-        alertView.beginSheetModalForWindow(window, completionHandler: nil)
+        alertView.beginSheetModal(for: window, completionHandler: nil)
     }
     
     // Show confirm dialog
-    func showConfirm( message: NSString ) -> NSModalResponse {
+    func showConfirm( _ message: NSString ) -> NSModalResponse {
         let alertView = NSAlert()
 
-        alertView.addButtonWithTitle(NSLocalizedString("Cancel", comment: ""))
-        alertView.addButtonWithTitle(NSLocalizedString("Delete", comment: ""))
-        alertView.alertStyle = NSAlertStyle.CriticalAlertStyle
+        alertView.addButton(withTitle: NSLocalizedString("Cancel", comment: ""))
+        alertView.addButton(withTitle: NSLocalizedString("Delete", comment: ""))
+        alertView.alertStyle = NSAlertStyle.critical
         
         alertView.messageText = message as String
         alertView.informativeText = NSLocalizedString("This action is irreversible.", comment:"")

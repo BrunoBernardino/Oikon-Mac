@@ -16,7 +16,7 @@ class ExpenseTypesListViewController: NSViewController, NSTableViewDataSource, N
     var selectedExpenseTypeIndex: Int! = 0
     var selectedExpenseTypeName: NSString! = ""
     
-    var lastiCloudFetch: NSDate?
+    var lastiCloudFetch: Date?
     
     var thisController: ExpenseTypesListViewController!
     var mainViewController: ViewController!
@@ -28,7 +28,7 @@ class ExpenseTypesListViewController: NSViewController, NSTableViewDataSource, N
         // Do view setup here.
         
         // Listen for iCloud changes (after it's done)
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "iCloudDidUpdate:", name: NSPersistentStoreCoordinatorStoresDidChangeNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(ExpenseTypesListViewController.iCloudDidUpdate(_:)), name: NSNotification.Name.NSPersistentStoreCoordinatorStoresDidChange, object: nil)
         
         self.thisController = self
         
@@ -36,8 +36,8 @@ class ExpenseTypesListViewController: NSViewController, NSTableViewDataSource, N
         //self.setTitle("Expense Types");
         
         // Make sure the table loads data from and listens to this controller
-        expenseTypesTableView.setDelegate(self)
-        expenseTypesTableView.setDataSource(self)
+        expenseTypesTableView.delegate = self
+        expenseTypesTableView.dataSource = self
         
         // Fetch expense types
         self.getAllExpenseTypes()
@@ -50,12 +50,12 @@ class ExpenseTypesListViewController: NSViewController, NSTableViewDataSource, N
     
     // Get all expense types
     func getAllExpenseTypes() {
-        let appDelegate = NSApplication.sharedApplication().delegate as! AppDelegate
+        let appDelegate = NSApplication.shared().delegate as! AppDelegate
         let context = appDelegate.managedObjectContext
         
-        let entityDesc = NSEntityDescription.entityForName("ExpenseType", inManagedObjectContext:context!)
+        let entityDesc = NSEntityDescription.entity(forEntityName: "ExpenseType", in:context!)
         
-        let request = NSFetchRequest()
+        let request = NSFetchRequest<NSFetchRequestResult>()
         request.entity = entityDesc
         
         // Sort expenses by name
@@ -71,7 +71,7 @@ class ExpenseTypesListViewController: NSViewController, NSTableViewDataSource, N
         var objects: NSArray
         
         let error: NSError? = nil
-        objects = try! context!.executeFetchRequest(request)
+        objects = try! context!.fetch(request) as NSArray
         
         if ( error != nil ) {
             objects = []
@@ -96,13 +96,13 @@ class ExpenseTypesListViewController: NSViewController, NSTableViewDataSource, N
     }
     
     // Get a count of all expenses for a given expense type
-    func getExpenseTypeCount( expenseTypeName: NSString ) -> NSInteger {
-        let appDelegate = NSApplication.sharedApplication().delegate as! AppDelegate
+    func getExpenseTypeCount( _ expenseTypeName: NSString ) -> NSInteger {
+        let appDelegate = NSApplication.shared().delegate as! AppDelegate
         let context = appDelegate.managedObjectContext
         
-        let entityDesc = NSEntityDescription.entityForName("Expense", inManagedObjectContext:context!)
+        let entityDesc = NSEntityDescription.entity(forEntityName: "Expense", in:context!)
         
-        let request = NSFetchRequest()
+        let request = NSFetchRequest<NSFetchRequestResult>()
         request.entity = entityDesc
         
         // Add expense type name to search
@@ -116,7 +116,7 @@ class ExpenseTypesListViewController: NSViewController, NSTableViewDataSource, N
         var objects: NSArray
         
         let error: NSError? = nil
-        objects = try! context!.executeFetchRequest(request)
+        objects = try! context!.fetch(request) as NSArray
         
         if ( error != nil ) {
             objects = []
@@ -126,13 +126,13 @@ class ExpenseTypesListViewController: NSViewController, NSTableViewDataSource, N
     }
     
     // Check if an expense type name already exists
-    func expenseTypeExists( expenseTypeName: NSString ) -> Bool {
-        let appDelegate = NSApplication.sharedApplication().delegate as! AppDelegate
+    func expenseTypeExists( _ expenseTypeName: NSString ) -> Bool {
+        let appDelegate = NSApplication.shared().delegate as! AppDelegate
         let context = appDelegate.managedObjectContext
         
-        let entityDesc = NSEntityDescription.entityForName("ExpenseType", inManagedObjectContext:context!)
+        let entityDesc = NSEntityDescription.entity(forEntityName: "ExpenseType", in:context!)
         
-        let request = NSFetchRequest()
+        let request = NSFetchRequest<NSFetchRequestResult>()
         request.entity = entityDesc
         
         // Add expense type name to search
@@ -146,7 +146,7 @@ class ExpenseTypesListViewController: NSViewController, NSTableViewDataSource, N
         var objects: NSArray
         
         let error: NSError? = nil
-        objects = try! context!.executeFetchRequest(request)
+        objects = try! context!.fetch(request) as NSArray
         
         if ( error != nil ) {
             objects = []
@@ -155,30 +155,30 @@ class ExpenseTypesListViewController: NSViewController, NSTableViewDataSource, N
         return ( objects.count > 0 )
     }
     
-    func numberOfRowsInTableView(aTableView: NSTableView) -> Int {
+    func numberOfRows(in aTableView: NSTableView) -> Int {
         let numberOfRows:Int = self.expenseTypes.count
         return numberOfRows
     }
     
     // Format & Display Row Cells
-    func tableView(tableView: NSTableView, viewForTableColumn tableColumn: NSTableColumn?, row: Int) -> NSView? {
+    func tableView(_ tableView: NSTableView, viewFor tableColumn: NSTableColumn?, row: Int) -> NSView? {
         
         let cellIdentifier = NSString(format: "%@Cell", tableColumn!.identifier) as String!
         
-        let result: NSTableCellView = self.expenseTypesTableView.makeViewWithIdentifier(cellIdentifier, owner: self.expenseTypesTableView) as! NSTableCellView
+        let result: NSTableCellView = self.expenseTypesTableView.make(withIdentifier: cellIdentifier!, owner: self.expenseTypesTableView) as! NSTableCellView
         
         var stringValue: NSString!
         
         // Format Count
         if ( tableColumn!.identifier == "count" ) {
-            let numberOfExpenses = self.getExpenseTypeCount( self.expenseTypes.objectAtIndex(row).valueForKey("name") as! NSString ) as Int
-            let numberFormatter = NSNumberFormatter()
-            numberFormatter.locale = NSLocale.currentLocale()
-            numberFormatter.numberStyle = NSNumberFormatterStyle.NoStyle
+            let numberOfExpenses = self.getExpenseTypeCount( (self.expenseTypes.object(at: row) as AnyObject).value(forKey: "name") as! NSString ) as NSNumber
+            let numberFormatter = NumberFormatter()
+            numberFormatter.locale = Locale.current
+            numberFormatter.numberStyle = NumberFormatter.Style.none
             
-            stringValue = numberFormatter.stringFromNumber(numberOfExpenses)
+            stringValue = numberFormatter.string(from: numberOfExpenses)! as NSString
         } else {
-            stringValue = self.expenseTypes.objectAtIndex( row ).valueForKey( tableColumn!.identifier ) as! NSString!
+            stringValue = (self.expenseTypes.object( at: row ) as AnyObject).value( forKey: tableColumn!.identifier ) as! NSString!
         }
         
         result.textField!.stringValue = stringValue as String
@@ -187,22 +187,22 @@ class ExpenseTypesListViewController: NSViewController, NSTableViewDataSource, N
     }
     
     // Row is selected
-    @IBAction func showExpenseTypeForEdit(sender: AnyObject) {
+    @IBAction func showExpenseTypeForEdit(_ sender: AnyObject) {
         let selectedRowIndex = self.expenseTypesTableView.selectedRow
         
         // If the index is -1 means nothing is selected, but this event was triggered still
         if ( selectedRowIndex != -1 ) {
             // Define selected values
             self.selectedExpenseTypeIndex = selectedRowIndex
-            self.selectedExpenseTypeName = self.expenseTypes.objectAtIndex(selectedRowIndex).valueForKey("name") as! NSString
+            self.selectedExpenseTypeName = (self.expenseTypes.object(at: selectedRowIndex) as AnyObject).value(forKey: "name") as! NSString
             
             // Show popover
-            self.performSegueWithIdentifier("editExpenseType", sender: self)
+            self.performSegue(withIdentifier: "editExpenseType", sender: self)
         }
     }
     
     
-    override func prepareForSegue(segue: NSStoryboardSegue, sender: AnyObject?) {
+    override func prepare(for segue: NSStoryboardSegue, sender: Any?) {
         // Assign mainViewController
         if segue.identifier == "addExpenseType" {
             let viewController = segue.destinationController as! AddExpenseTypeViewController
@@ -220,7 +220,7 @@ class ExpenseTypesListViewController: NSViewController, NSTableViewDataSource, N
     }
     
     // iCloud just finished updating
-    @IBAction func iCloudDidUpdate( sender: AnyObject? ) {
+    @IBAction func iCloudDidUpdate( _ sender: AnyObject? ) {
         // TODO: This is causing some unnecessary instability
         /*// This was creating an infinite loop, so we only allow this to run once every minute tops.
         let codeHasRunInThePastMinute: Bool

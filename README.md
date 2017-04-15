@@ -1,6 +1,6 @@
 # Oikon Mac
 
-This is the code for the Oikon OS X app, available at http://oikon.us
+This is the code for the Oikon OS X app, available at https://oikon.net
 
 It's open for everyone to contribute to.
 

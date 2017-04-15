@@ -15,7 +15,7 @@ class WindowController: NSWindowController {
         NSLog("Window loaded!")
 
         // Unify title bar
-        self.window!.titleVisibility = NSWindowTitleVisibility.Hidden
+        self.window!.titleVisibility = NSWindowTitleVisibility.hidden
         self.window!.titlebarAppearsTransparent = true
     }
 }

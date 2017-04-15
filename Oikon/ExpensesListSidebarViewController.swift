@@ -17,26 +17,26 @@ class ExpensesListSidebarViewController: NSViewController, NSTableViewDataSource
     var listViewController: ExpensesListViewController!
     var mainViewController: ViewController!
     
-    var lastiCloudFetch: NSDate?
+    var lastiCloudFetch: Date?
 
     @IBOutlet var totalText: NSTextField!
     @IBOutlet var searchText: NSSearchField!
 
     @IBOutlet weak var expenseTypesTableView: NSTableView!
     
-    @IBAction func enteredSearchText(sender: AnyObject) {
+    @IBAction func enteredSearchText(_ sender: AnyObject) {
         // Update filter
-        self.listViewController.currentFilterName = searchText.stringValue
+        self.listViewController.currentFilterName = searchText.stringValue as NSString
         
         // Get filtered expenses
         self.listViewController.getAllExpenses()
     }
     
     // Action clicking on checkbox
-    @IBAction func checkboxStateChanged(sender: NSButton!) {
+    @IBAction func checkboxStateChanged(_ sender: NSButton!) {
         let isRemoving: Bool = ( sender.state == NSOffState )
         let expenseTypeIndex = sender.tag - 1
-        let expenseTypeName: String = self.listViewController.expenseTypes.objectAtIndex(expenseTypeIndex).valueForKey("name") as! String
+        let expenseTypeName: String = (self.listViewController.expenseTypes.object(at: expenseTypeIndex) as AnyObject).value(forKey: "name") as! String
         
         /*NSLog("INDEX = %d", expenseTypeIndex)
         if ( isRemoving ) {
@@ -49,23 +49,23 @@ class ExpensesListSidebarViewController: NSViewController, NSTableViewDataSource
         if ( self.selectedExpenseTypeNames.count == 0 && isRemoving ) {
             //NSLog("ADDING EVERYTHING TO ARRAY")
             for expenseType in self.listViewController.expenseTypes {
-                self.selectedExpenseTypeNames.addObject(expenseType.valueForKey("name")!)
+                self.selectedExpenseTypeNames.add((expenseType as AnyObject).value(forKey: "name")!)
             }
         }
         
-        let foundIndex = self.selectedExpenseTypeNames.indexOfObject(expenseTypeName)
+        let foundIndex = self.selectedExpenseTypeNames.index(of: expenseTypeName)
         
         //NSLog("FOUND INDEX = %d", foundIndex)
         
         // If we're removing, do it
         if ( isRemoving ) {
-            self.selectedExpenseTypeNames.removeObjectAtIndex(foundIndex)
+            self.selectedExpenseTypeNames.removeObject(at: foundIndex)
         } else {
             if ( foundIndex != NSNotFound ) {
                 // It's already there, do nothing!?
                 NSLog("WARNING: Trying to add an expense type to filters, when it's already there. This should not happen!!")
             } else {
-                self.selectedExpenseTypeNames.addObject(expenseTypeName)
+                self.selectedExpenseTypeNames.add(expenseTypeName)
             }
         }
         
@@ -88,11 +88,11 @@ class ExpensesListSidebarViewController: NSViewController, NSTableViewDataSource
         // Do view setup here.
         
         // Listen for iCloud changes (after it's done)
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "iCloudDidUpdate:", name: NSPersistentStoreCoordinatorStoresDidChangeNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(ExpensesListSidebarViewController.iCloudDidUpdate(_:)), name: NSNotification.Name.NSPersistentStoreCoordinatorStoresDidChange, object: nil)
         
         // Make sure the table loads data from and listens to this controller
-        expenseTypesTableView.setDelegate(self)
-        expenseTypesTableView.setDataSource(self)
+        expenseTypesTableView.delegate = self
+        expenseTypesTableView.dataSource = self
         
         self.selectedExpenseTypeNames = NSMutableArray(array: self.listViewController.currentFilterTypes)
         
@@ -101,24 +101,30 @@ class ExpensesListSidebarViewController: NSViewController, NSTableViewDataSource
         
         // Reload view with new data
         self.expenseTypesTableView.reloadData()
+        
+        // Enable self.searchText's clear button
+        //let maskLayer = CALayer()
+        //self.searchText.layer = maskLayer
+        //maskLayer.backgroundColor = self.searchText.backgroundColor?.cgColor
     }
     
     override func viewWillAppear() {
     }
     
     // Calculate and show total for all found expenses
-    func calculateAndShowTotal( expenses:NSMutableArray ) {
+    func calculateAndShowTotal( _ expenses:NSMutableArray ) {
         var expensesTotal: Double = 0;
     
-        for expense: AnyObject in expenses {
-            expensesTotal += expense.valueForKey("value") as! Double
+        for _expense in expenses {
+            let expense = _expense as AnyObject
+            expensesTotal += expense.value(forKey: "value") as! Double
         }
         
-        let numberFormatter = NSNumberFormatter()
-        numberFormatter.locale = NSLocale.currentLocale()
-        numberFormatter.numberStyle = NSNumberFormatterStyle.CurrencyStyle
+        let numberFormatter = NumberFormatter()
+        numberFormatter.locale = Locale.current
+        numberFormatter.numberStyle = NumberFormatter.Style.currency
     
-        let formattedTotal:String = numberFormatter.stringFromNumber(NSNumber(double: expensesTotal))!
+        let formattedTotal:String = numberFormatter.string(from: NSNumber(value: expensesTotal as Double))!
         
         //NSLog("Calculating total = %@", formattedTotal)
         
@@ -128,17 +134,17 @@ class ExpensesListSidebarViewController: NSViewController, NSTableViewDataSource
         }
     }
     
-    func numberOfRowsInTableView(aTableView: NSTableView) -> Int {
+    func numberOfRows(in aTableView: NSTableView) -> Int {
         let numberOfRows:Int = self.listViewController.expenseTypes.count
         return numberOfRows
     }
     
     // Format & Display Row Cells
-    func tableView(tableView: NSTableView, viewForTableColumn tableColumn: NSTableColumn?, row: Int) -> NSView? {
+    func tableView(_ tableView: NSTableView, viewFor tableColumn: NSTableColumn?, row: Int) -> NSView? {
         
         let cellIdentifier = NSString(format: "%@Cell", tableColumn!.identifier) as String!
         
-        let result: NSTableCellView = self.expenseTypesTableView.makeViewWithIdentifier(cellIdentifier, owner: self.expenseTypesTableView) as! NSTableCellView
+        let result: NSTableCellView = self.expenseTypesTableView.make(withIdentifier: cellIdentifier!, owner: self.expenseTypesTableView) as! NSTableCellView
         
         var stringValue: NSString!
         
@@ -146,7 +152,7 @@ class ExpensesListSidebarViewController: NSViewController, NSTableViewDataSource
         if ( tableColumn!.identifier == "checked" ) {
             let checkboxView = result.subviews[0] as! NSButton
 
-            let expenseTypeName = self.listViewController.expenseTypes.objectAtIndex(row).valueForKey("name") as! NSString
+            let expenseTypeName = (self.listViewController.expenseTypes.object(at: row) as AnyObject).value(forKey: "name") as! NSString
             
             // Set tag so we can "find it" after, when clicking on it
             checkboxView.tag = row + 1
@@ -155,7 +161,7 @@ class ExpensesListSidebarViewController: NSViewController, NSTableViewDataSource
             if ( self.selectedExpenseTypeNames.count == 0 ) {
                 checkboxView.state = NSOnState
             } else {
-                if ( self.selectedExpenseTypeNames.containsObject(expenseTypeName) ) {
+                if ( self.selectedExpenseTypeNames.contains(expenseTypeName) ) {
                     checkboxView.state = NSOnState
                 } else {
                     checkboxView.state = NSOffState
@@ -167,15 +173,15 @@ class ExpensesListSidebarViewController: NSViewController, NSTableViewDataSource
         
         // Format Count
         if ( tableColumn!.identifier == "count" ) {
-            let numberOfExpenses = self.listViewController.getExpenseTypeSum( self.listViewController.expenseTypes.objectAtIndex(row).valueForKey("name") as! NSString ) as Float
-            let numberFormatter = NSNumberFormatter()
-            numberFormatter.locale = NSLocale.currentLocale()
-            numberFormatter.numberStyle = NSNumberFormatterStyle.DecimalStyle
+            let numberOfExpenses = self.listViewController.getExpenseTypeSum( (self.listViewController.expenseTypes.object(at: row) as AnyObject).value(forKey: "name") as! NSString ) as NSNumber
+            let numberFormatter = NumberFormatter()
+            numberFormatter.locale = Locale.current
+            numberFormatter.numberStyle = NumberFormatter.Style.decimal
             
-            stringValue = numberFormatter.stringFromNumber(numberOfExpenses)
+            stringValue = numberFormatter.string(from: numberOfExpenses)! as NSString
         } else {
             // Format Name
-            stringValue = self.listViewController.expenseTypes.objectAtIndex( row ).valueForKey( tableColumn!.identifier ) as! NSString!
+            stringValue = (self.listViewController.expenseTypes.object( at: row ) as AnyObject).value( forKey: tableColumn!.identifier ) as! NSString!
         }
         
         result.textField!.stringValue = stringValue as String
@@ -184,7 +190,7 @@ class ExpensesListSidebarViewController: NSViewController, NSTableViewDataSource
     }
     
     // iCloud just finished updating
-    @IBAction func iCloudDidUpdate( sender: AnyObject? ) {
+    @IBAction func iCloudDidUpdate( _ sender: AnyObject? ) {
         // TODO: This is causing some unnecessary instability
         /*// This was creating an infinite loop, so we only allow this to run once every minute tops.
         let codeHasRunInThePastMinute: Bool
