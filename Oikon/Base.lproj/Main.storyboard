@@ -124,7 +124,7 @@
         <!--Oikon-->
         <scene sceneID="hIz-AP-VOD">
             <objects>
-                <viewController title="Oikon" showSeguePresentationStyle="single" id="XfG-lQ-9wD" customClass="ViewController" customModule="Oikon" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController title="Oikon" id="XfG-lQ-9wD" customClass="ViewController" customModule="Oikon" customModuleProvider="target" sceneMemberID="viewController">
                     <visualEffectView key="view" appearanceType="vibrantDark" blendingMode="behindWindow" material="appearanceBased" state="followsWindowActiveState" id="12f-OC-8cl">
                         <rect key="frame" x="0.0" y="0.0" width="300" height="405"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
@@ -140,7 +140,7 @@
                                     <string key="keyEquivalent">a</string>
                                 </buttonCell>
                                 <connections>
-                                    <segue destination="vAb-TZ-zjr" kind="modal" identifier="addExpense" id="xJn-Gg-vM9"/>
+                                    <segue destination="vAb-TZ-zjr" kind="show" identifier="addExpense" id="xJn-Gg-vM9"/>
                                 </connections>
                             </button>
                             <button tag="1" translatesAutoresizingMaskIntoConstraints="NO" id="SXY-rz-dui">
@@ -154,7 +154,7 @@
                                     <string key="keyEquivalent">e</string>
                                 </buttonCell>
                                 <connections>
-                                    <segue destination="bVk-Xf-EYe" kind="modal" identifier="expenseTypes" id="5g6-nq-qdT"/>
+                                    <segue destination="bVk-Xf-EYe" kind="show" identifier="expenseTypes" id="5g6-nq-qdT"/>
                                 </connections>
                             </button>
                             <button tag="1" translatesAutoresizingMaskIntoConstraints="NO" id="9ZJ-Mg-YS0">
@@ -168,7 +168,7 @@
                                     <string key="keyEquivalent">p</string>
                                 </buttonCell>
                                 <connections>
-                                    <segue destination="ji4-DL-0YU" kind="modal" identifier="pastExpensesOpen" id="Ik5-Yt-d6d"/>
+                                    <segue destination="ji4-DL-0YU" kind="show" identifier="pastExpensesOpen" id="Ik5-Yt-d6d"/>
                                 </connections>
                             </button>
                             <button tag="1" translatesAutoresizingMaskIntoConstraints="NO" id="5FH-c7-YFT">
@@ -182,7 +182,7 @@
                                     <string key="keyEquivalent">s</string>
                                 </buttonCell>
                                 <connections>
-                                    <segue destination="wOn-k1-nU6" kind="modal" identifier="settings" id="cAv-bS-gHA"/>
+                                    <segue destination="wOn-k1-nU6" kind="show" identifier="settings" id="cAv-bS-gHA"/>
                                 </connections>
                             </button>
                             <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" setsMaxLayoutWidthAtFirstLayout="YES" allowsCharacterPickerTouchBarItem="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ml8-XT-zyf">
