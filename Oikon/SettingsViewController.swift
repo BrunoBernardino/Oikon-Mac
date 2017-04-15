@@ -12,18 +12,18 @@ class SettingsViewController: NSViewController {
     
     var mainViewController: ViewController!
     
-    var settings: NSUserDefaults!
+    var settings: UserDefaults!
     
-    var lastiCloudFetch: NSDate?
+    var lastiCloudFetch: Date?
     
     @IBOutlet weak var lastSyncLabel: NSTextField!
     @IBOutlet weak var iCloudSwitch: NSButton!
     
     // Remove all data
-    @IBAction func removeAllData(sender: AnyObject) {
-        let appDelegate = NSApplication.sharedApplication().delegate as! AppDelegate
+    @IBAction func removeAllData(_ sender: AnyObject) {
+        let appDelegate = NSApplication.shared().delegate as! AppDelegate
         
-        let buttonPressed = self.mainViewController.showConfirm( NSLocalizedString("This will remove all local & iCloud data, including expenses, and expense types", comment: "") )
+        let buttonPressed = self.mainViewController.showConfirm( NSLocalizedString("This will remove all local & iCloud data, including expenses, and expense types", comment: "") as NSString )
         
         // Confirmed!
         if buttonPressed == NSAlertSecondButtonReturn {
@@ -32,8 +32,8 @@ class SettingsViewController: NSViewController {
     }
 
     // Toggle iCloud sync
-    @IBAction func toggleiCloudSync(sender: AnyObject) {
-        let appDelegate = NSApplication.sharedApplication().delegate as! AppDelegate
+    @IBAction func toggleiCloudSync(_ sender: AnyObject) {
+        let appDelegate = NSApplication.shared().delegate as! AppDelegate
         let checkbox: NSButton = sender as! NSButton
         
         self.updateSettings()
@@ -49,14 +49,14 @@ class SettingsViewController: NSViewController {
     
     // Fetch settings
     func fetchSettings() {
-        self.settings = NSUserDefaults.standardUserDefaults()
+        self.settings = UserDefaults.standard
         self.settings.synchronize()
         
-        NSLog("%@", self.settings.objectForKey("iCloud.osx") as! NSMutableDictionary)
+        NSLog("%@", self.settings.object(forKey: "iCloud.osx") as! NSMutableDictionary)
         
-        let iCloudSettings: NSMutableDictionary = self.settings.objectForKey("iCloud.osx") as! NSMutableDictionary
-        let isiCloudEnabled: Bool = iCloudSettings.valueForKey("isEnabled") as! Bool
-        let lastSync: NSDate? = iCloudSettings.valueForKey("lastSuccessfulSync") as? NSDate
+        let iCloudSettings: NSMutableDictionary = self.settings.object(forKey: "iCloud.osx") as! NSMutableDictionary
+        let isiCloudEnabled: Bool = iCloudSettings.value(forKey: "isEnabled") as! Bool
+        let lastSync: Date? = iCloudSettings.value(forKey: "lastSuccessfulSync") as? Date
         
         // Update checkbox
         if ( isiCloudEnabled == true ) {
@@ -65,14 +65,14 @@ class SettingsViewController: NSViewController {
             self.iCloudSwitch.state = NSOffState
         }
         
-        let dateFormatter = NSDateFormatter()
-        dateFormatter.locale = NSLocale.currentLocale()
-        dateFormatter.dateStyle = NSDateFormatterStyle.ShortStyle
+        let dateFormatter = DateFormatter()
+        dateFormatter.locale = Locale.current
+        dateFormatter.dateStyle = DateFormatter.Style.short
         dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
         
         // Update label
         if ( lastSync != nil ) {
-            self.lastSyncLabel.stringValue = dateFormatter.stringFromDate(lastSync!)
+            self.lastSyncLabel.stringValue = dateFormatter.string(from: lastSync!)
         } else {
             self.lastSyncLabel.stringValue = NSLocalizedString("N/A", comment:"")
         }
@@ -80,10 +80,10 @@ class SettingsViewController: NSViewController {
     
     // Update settings
     func updateSettings() {
-        self.settings = NSUserDefaults.standardUserDefaults()
+        self.settings = UserDefaults.standard
         self.settings.synchronize()
         
-        let iCloudSettings: NSMutableDictionary = self.settings.objectForKey("iCloud.osx")!.mutableCopy() as! NSMutableDictionary
+        let iCloudSettings: NSMutableDictionary = (self.settings.object(forKey: "iCloud.osx") as! NSDictionary!).mutableCopy() as! NSMutableDictionary
         var isiCloudEnabled: Bool = false
         
         // Update checkbox status
@@ -93,7 +93,7 @@ class SettingsViewController: NSViewController {
 
         iCloudSettings.setValue(isiCloudEnabled, forKey: "isEnabled")
         
-        self.settings.setObject(iCloudSettings, forKey: "iCloud.osx")
+        self.settings.set(iCloudSettings, forKey: "iCloud.osx")
     }
 
     override func viewDidLoad() {
@@ -101,7 +101,7 @@ class SettingsViewController: NSViewController {
         // Do view setup here.
         
         // Listen for iCloud changes (after it's done)
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "iCloudDidUpdate:", name: NSPersistentStoreCoordinatorStoresDidChangeNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: "iCloudDidUpdate:", name: NSNotification.Name.NSPersistentStoreCoordinatorStoresDidChange, object: nil)
     }
     
     override func viewWillAppear() {
@@ -109,7 +109,7 @@ class SettingsViewController: NSViewController {
     }
     
     // iCloud just finished updating
-    @IBAction func iCloudDidUpdate( sender: AnyObject? ) {
+    @IBAction func iCloudDidUpdate( _ sender: AnyObject? ) {
         // TODO: This is causing some unnecessary instability
         /*// This was creating an infinite loop, so we only allow this to run once every minute tops.
         let codeHasRunInThePastMinute: Bool

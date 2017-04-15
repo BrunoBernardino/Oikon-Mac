@@ -17,13 +17,13 @@ class EditExpenseTypeViewController: NSViewController {
     @IBOutlet var nameText: NSTextField!
     
     // Update expense type and update all the expenses with it
-    @IBAction func updateExpenseType(sender: AnyObject) {
-        let appDelegate = NSApplication.sharedApplication().delegate as! AppDelegate
+    @IBAction func updateExpenseType(_ sender: AnyObject) {
+        let appDelegate = NSApplication.shared().delegate as! AppDelegate
         let context = appDelegate.managedObjectContext
         
-        let numberFormatter = NSNumberFormatter()
-        numberFormatter.locale = NSLocale.currentLocale()
-        numberFormatter.numberStyle = NSNumberFormatterStyle.DecimalStyle
+        let numberFormatter = NumberFormatter()
+        numberFormatter.locale = Locale.current
+        numberFormatter.numberStyle = NumberFormatter.Style.decimal
         
         let uncategorizedStringValue = NSLocalizedString("uncategorized", comment: "")
         
@@ -31,8 +31,8 @@ class EditExpenseTypeViewController: NSViewController {
         var expenseTypeName: NSString = ""
         
         // Avoid empty values crashing the code
-        if let tmpExpenseTypeName: NSString? = self.nameText?.stringValue {
-            expenseTypeName = tmpExpenseTypeName!
+        if let tmpExpenseTypeName: NSString = self.nameText.stringValue as NSString? {
+            expenseTypeName = tmpExpenseTypeName
         }
         
         //NSLog("%@", expenseTypeName)
@@ -43,21 +43,21 @@ class EditExpenseTypeViewController: NSViewController {
         
         // Check if the expense type name is not empty
         if ( expenseTypeName.length <= 0 ) {
-            self.mainViewController.mainViewController.showAlert(NSLocalizedString("Please confirm the name of the expense type.", comment:""), window: self.mainViewController.view.window!)
+            self.mainViewController.mainViewController.showAlert(NSLocalizedString("Please confirm the name of the expense type.", comment:"") as NSString, window: self.mainViewController.view.window!)
             
             return;
         }
         
         // Check if the expense type name is "uncategorized" (case insensitive, not allowed)
-        if ( expenseTypeName.compare(uncategorizedStringValue) == NSComparisonResult.OrderedSame ) {
-            self.mainViewController.mainViewController.showAlert(NSLocalizedString("Your expense type can't be called 'uncategorized'.", comment:""), window: self.mainViewController.view.window!)
+        if ( expenseTypeName.compare(uncategorizedStringValue) == ComparisonResult.orderedSame ) {
+            self.mainViewController.mainViewController.showAlert(NSLocalizedString("Your expense type can't be called 'uncategorized'.", comment:"") as NSString, window: self.mainViewController.view.window!)
             
             return;
         }
         
         // Check if an expense type with that name already exists, and this name changed
         if ( expenseTypeName != originalExpenseTypeName && self.mainViewController.expenseTypeExists(expenseTypeName) ) {
-            self.mainViewController.mainViewController.showAlert(NSLocalizedString("An expense type with the same name already exists.", comment:""), window: self.mainViewController.view.window!)
+            self.mainViewController.mainViewController.showAlert(NSLocalizedString("An expense type with the same name already exists.", comment:"") as NSString, window: self.mainViewController.view.window!)
             
             return;
         }
@@ -70,7 +70,7 @@ class EditExpenseTypeViewController: NSViewController {
         // Save object
         //
         
-        let selectedExpenseType: NSManagedObject = self.mainViewController.expenseTypes.objectAtIndex(self.originalExpenseTypeIndex) as! NSManagedObject
+        let selectedExpenseType: NSManagedObject = self.mainViewController.expenseTypes.object(at: self.originalExpenseTypeIndex) as! NSManagedObject
         
         selectedExpenseType.setValue(expenseTypeName, forKey: "name")
         
@@ -89,13 +89,13 @@ class EditExpenseTypeViewController: NSViewController {
         } else {
             NSLog("Error: %@", error!)
             
-            self.mainViewController.mainViewController.showAlert(NSLocalizedString("There was an error updating your expense type. Please confirm the value types match.", comment:""), window: self.mainViewController.view.window!)
+            self.mainViewController.mainViewController.showAlert(NSLocalizedString("There was an error updating your expense type. Please confirm the value types match.", comment:"") as NSString, window: self.mainViewController.view.window!)
         }
         
         // Update all expenses with that expense type
-        let entityDesc = NSEntityDescription.entityForName("Expense", inManagedObjectContext:context!)
+        let entityDesc = NSEntityDescription.entity(forEntityName: "Expense", in:context!)
         
-        let request = NSFetchRequest()
+        let request = NSFetchRequest<NSFetchRequestResult>()
         request.entity = entityDesc
         
         // Add expense type name to update only the expenses that match it
@@ -104,7 +104,7 @@ class EditExpenseTypeViewController: NSViewController {
         
         var objects: [NSManagedObject]
         
-        objects = (try! context!.executeFetchRequest(request)) as! [NSManagedObject]
+        objects = (try! context!.fetch(request)) as! [NSManagedObject]
         
         if ( error == nil ) {
             for object: NSManagedObject in objects {
@@ -129,18 +129,18 @@ class EditExpenseTypeViewController: NSViewController {
     }
     
     // Delete expense type and remove it from all expenses with it
-    @IBAction func deleteExpenseType(sender: AnyObject) {
-        let appDelegate = NSApplication.sharedApplication().delegate as! AppDelegate
+    @IBAction func deleteExpenseType(_ sender: AnyObject) {
+        let appDelegate = NSApplication.shared().delegate as! AppDelegate
         let context = appDelegate.managedObjectContext
         
-        let expenseTypeToRemove: NSManagedObject = self.mainViewController.expenseTypes.objectAtIndex( self.originalExpenseTypeIndex ) as! NSManagedObject
+        let expenseTypeToRemove: NSManagedObject = self.mainViewController.expenseTypes.object( at: self.originalExpenseTypeIndex ) as! NSManagedObject
         
-        let buttonPressed = self.mainViewController.mainViewController.showConfirm( NSLocalizedString("Are you sure you want to delete this expense type?", comment: "") )
+        let buttonPressed = self.mainViewController.mainViewController.showConfirm( NSLocalizedString("Are you sure you want to delete this expense type?", comment: "") as NSString )
         
         // Confirmed!
         if buttonPressed == NSAlertSecondButtonReturn {
             // Delete from core data
-            context?.deleteObject(expenseTypeToRemove)
+            context?.delete(expenseTypeToRemove)
             
             var error: NSError? = nil
             do {
@@ -151,7 +151,7 @@ class EditExpenseTypeViewController: NSViewController {
             
             if ( error == nil ) {
                 // Delete from view
-                self.mainViewController.expenseTypes.removeObjectAtIndex(self.originalExpenseTypeIndex)
+                self.mainViewController.expenseTypes.removeObject(at: self.originalExpenseTypeIndex)
                 
                 // Refresh the table in the mainViewController
                 self.mainViewController.getAllExpenseTypes()
@@ -160,9 +160,9 @@ class EditExpenseTypeViewController: NSViewController {
             }
             
             // Change all expenses with this expense type to nil
-            let entityDesc = NSEntityDescription.entityForName("Expense", inManagedObjectContext:context!)
+            let entityDesc = NSEntityDescription.entity(forEntityName: "Expense", in:context!)
             
-            let request = NSFetchRequest()
+            let request = NSFetchRequest<NSFetchRequestResult>()
             request.entity = entityDesc
             
             // Add expense type name to update only the expenses that match it
@@ -171,7 +171,7 @@ class EditExpenseTypeViewController: NSViewController {
             
             var objects: [NSManagedObject]
             
-            objects = (try! context!.executeFetchRequest(request)) as! [NSManagedObject]
+            objects = (try! context!.fetch(request)) as! [NSManagedObject]
             
             if ( error == nil ) {
                 for object: NSManagedObject in objects {

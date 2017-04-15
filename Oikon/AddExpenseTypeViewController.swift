@@ -15,8 +15,8 @@ class AddExpenseTypeViewController: NSViewController {
     @IBOutlet var nameText: NSTextField!
     
     // Add expense type
-    @IBAction func addExpenseType(sender: AnyObject) {
-        let appDelegate = NSApplication.sharedApplication().delegate as! AppDelegate
+    @IBAction func addExpenseType(_ sender: AnyObject) {
+        let appDelegate = NSApplication.shared().delegate as! AppDelegate
         let context = appDelegate.managedObjectContext
         
         let uncategorizedStringValue = NSLocalizedString("uncategorized", comment: "")
@@ -25,7 +25,7 @@ class AddExpenseTypeViewController: NSViewController {
         var expenseTypeName: NSString = ""
         
         // Avoid empty values crashing the code
-        if let tmpExpenseTypeName: NSString? = self.nameText?.stringValue {
+        if let tmpExpenseTypeName: NSString? = self.nameText?.stringValue as NSString? {
             expenseTypeName = tmpExpenseTypeName!
         }
         
@@ -37,21 +37,21 @@ class AddExpenseTypeViewController: NSViewController {
         
         // Check if the expense type name is not empty
         if ( expenseTypeName.length <= 0 ) {
-            self.mainViewController.mainViewController.showAlert(NSLocalizedString("Please confirm the name of the expense type.", comment:""), window: self.mainViewController.view.window!)
+            self.mainViewController.mainViewController.showAlert(NSLocalizedString("Please confirm the name of the expense type.", comment:"") as NSString, window: self.mainViewController.view.window!)
             
             return;
         }
         
         // Check if the expense type name is "uncategorized" (case insensitive, not allowed)
-        if ( expenseTypeName.compare(uncategorizedStringValue) == NSComparisonResult.OrderedSame ) {
-            self.mainViewController.mainViewController.showAlert(NSLocalizedString("Your expense type can't be called 'uncategorized'.", comment:""), window: self.mainViewController.view.window!)
+        if ( expenseTypeName.compare(uncategorizedStringValue) == ComparisonResult.orderedSame ) {
+            self.mainViewController.mainViewController.showAlert(NSLocalizedString("Your expense type can't be called 'uncategorized'.", comment:"") as NSString, window: self.mainViewController.view.window!)
 
             return;
         }
         
         // Check if an expense type with that name already exists
         if ( self.mainViewController.expenseTypeExists(expenseTypeName) ) {
-            self.mainViewController.mainViewController.showAlert(NSLocalizedString("An expense type with the same name already exists.", comment:""), window: self.mainViewController.view.window!)
+            self.mainViewController.mainViewController.showAlert(NSLocalizedString("An expense type with the same name already exists.", comment:"") as NSString, window: self.mainViewController.view.window!)
             
             return;
         }
@@ -64,7 +64,7 @@ class AddExpenseTypeViewController: NSViewController {
         // Save object
         //
         
-        let newExpenseType: NSManagedObject = NSEntityDescription.insertNewObjectForEntityForName("ExpenseType", inManagedObjectContext: context!) 
+        let newExpenseType: NSManagedObject = NSEntityDescription.insertNewObject(forEntityName: "ExpenseType", into: context!) 
 
         newExpenseType.setValue(expenseTypeName, forKey: "name")
         
@@ -86,7 +86,7 @@ class AddExpenseTypeViewController: NSViewController {
         } else {
             NSLog("Error: %@", error!)
             
-            self.mainViewController.mainViewController.showAlert(NSLocalizedString("There was an error adding your expense type. Please confirm the value types match.", comment:""), window: self.mainViewController.view.window!)
+            self.mainViewController.mainViewController.showAlert(NSLocalizedString("There was an error adding your expense type. Please confirm the value types match.", comment:"") as NSString, window: self.mainViewController.view.window!)
         }
         
         // Close popover

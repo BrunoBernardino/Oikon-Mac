@@ -22,22 +22,22 @@ class AddExpenseViewController: NSViewController {
     @IBOutlet var addExpenseButton: NSButton!
     
     // Add expense
-    @IBAction func addExpense(sender: AnyObject) {
-        let appDelegate = NSApplication.sharedApplication().delegate as! AppDelegate
+    @IBAction func addExpense(_ sender: AnyObject) {
+        let appDelegate = NSApplication.shared().delegate as! AppDelegate
         let context = appDelegate.managedObjectContext
         
-        let numberFormatter = NSNumberFormatter()
-        numberFormatter.locale = NSLocale.currentLocale()
-        numberFormatter.numberStyle = NSNumberFormatterStyle.DecimalStyle
+        let numberFormatter = NumberFormatter()
+        numberFormatter.locale = Locale.current
+        numberFormatter.numberStyle = NumberFormatter.Style.decimal
         
         // Set defaults
         var expenseValue: NSNumber = 0
         var expenseName: NSString = ""
-        var expenseType: NSString? = uncategorizedStringValue
-        var expenseDate: NSDate = NSDate()// Default expense date to "now"
+        var expenseType: NSString? = uncategorizedStringValue as NSString
+        var expenseDate: Date = Date()// Default expense date to "now"
         
         // Avoid empty values crashing the code
-        if let tmpExpenseValue: NSNumber = numberFormatter.numberFromString(self.valueText.stringValue) {
+        if let tmpExpenseValue: NSNumber = numberFormatter.number(from: self.valueText.stringValue) {
             expenseValue = tmpExpenseValue
         }
         if let tmpExpenseName: NSString = self.nameText.stringValue as NSString? {
@@ -46,7 +46,7 @@ class AddExpenseViewController: NSViewController {
         if let tmpExpenseType: NSString = self.typeText.titleOfSelectedItem! as NSString? {
             expenseType = tmpExpenseType
         }
-        if let tmpExpenseDate: NSDate = self.dateText.dateValue as NSDate? {
+        if let tmpExpenseDate: Date = self.dateText.dateValue as Date? {
             expenseDate = tmpExpenseDate
         }
         
@@ -58,14 +58,14 @@ class AddExpenseViewController: NSViewController {
         
         // Check if value is greater than 0
         if ( !expenseValue.boolValue ) {
-            self.mainViewController.showAlert(NSLocalizedString("Please confirm the value of the expense.", comment:""), window: self.view.window!)
+            self.mainViewController.showAlert(NSLocalizedString("Please confirm the value of the expense.", comment:"") as NSString, window: self.view.window!)
             
             return;
         }
         
         // Check if the expense name is not empty
         if ( expenseName.length <= 0 ) {
-            self.mainViewController.showAlert(NSLocalizedString("Please confirm the name of the expense.", comment:""), window: self.view.window!)
+            self.mainViewController.showAlert(NSLocalizedString("Please confirm the name of the expense.", comment:"") as NSString, window: self.view.window!)
             
             return;
         }
@@ -75,7 +75,7 @@ class AddExpenseViewController: NSViewController {
         //
         
         // Check if the expense type is empty (if empty or uncategorized, set to nil)
-        if ( expenseType!.length <= 0 || expenseType!.isEqualToString(uncategorizedStringValue) ) {
+        if ( expenseType!.length <= 0 || expenseType!.isEqual(to: uncategorizedStringValue) ) {
             expenseType = nil
         }
         
@@ -83,7 +83,7 @@ class AddExpenseViewController: NSViewController {
         // Save object
         //
         
-        let newExpense: NSManagedObject = NSEntityDescription.insertNewObjectForEntityForName("Expense", inManagedObjectContext: context!) 
+        let newExpense: NSManagedObject = NSEntityDescription.insertNewObject(forEntityName: "Expense", into: context!) 
         newExpense.setValue(expenseValue, forKey: "value")
         newExpense.setValue(expenseName, forKey: "name")
         newExpense.setValue(expenseType, forKey: "type")
@@ -100,15 +100,15 @@ class AddExpenseViewController: NSViewController {
             // Cleanup fields
             self.valueText.stringValue = ""
             self.nameText.stringValue = ""
-            self.typeText.selectItemAtIndex(0)
+            self.typeText.selectItem(at: 0)
             self.typeText.setTitle(uncategorizedStringValue)
-            self.dateText.dateValue = NSDate()
+            self.dateText.dateValue = Date()
             
             //self.mainViewController.showAlert(NSLocalizedString("Your expense was added successfully.", comment:""), window: self.view.window!)
         } else {
             NSLog("Error: %@", error!)
             
-            self.mainViewController.showAlert(NSLocalizedString("There was an error adding your expense. Please confirm the value types match.", comment:""), window: self.view.window!)
+            self.mainViewController.showAlert(NSLocalizedString("There was an error adding your expense. Please confirm the value types match.", comment:"") as NSString, window: self.view.window!)
         }
     }
 
@@ -121,11 +121,11 @@ class AddExpenseViewController: NSViewController {
         
         //
         // Update value placeholder
-        let numberFormatter = NSNumberFormatter()
-        numberFormatter.locale = NSLocale.currentLocale()
-        numberFormatter.numberStyle = NSNumberFormatterStyle.DecimalStyle
+        let numberFormatter = NumberFormatter()
+        numberFormatter.locale = Locale.current
+        numberFormatter.numberStyle = NumberFormatter.Style.decimal
         
-        self.valueText.placeholderString = numberFormatter.stringFromNumber(9.99)
+        self.valueText.placeholderString = numberFormatter.string(from: 9.99)
         
         //
         // Add items to drop-down
@@ -138,18 +138,18 @@ class AddExpenseViewController: NSViewController {
         expenseTypeStrings.append( self.uncategorizedStringValue )
         
         for expenseType in self.expenseTypes {
-            expenseTypeStrings.append( expenseType.valueForKey("name") as! String )
+            expenseTypeStrings.append( (expenseType as AnyObject).value(forKey: "name") as! String )
         }
         
         self.typeText.removeAllItems()
-        self.typeText.addItemsWithTitles(expenseTypeStrings)
+        self.typeText.addItems(withTitles: expenseTypeStrings)
         
         // Select uncategorized by default
-        self.typeText.selectItemWithTitle(self.uncategorizedStringValue)
+        self.typeText.selectItem(withTitle: self.uncategorizedStringValue)
         self.typeText.setTitle(self.uncategorizedStringValue)
         
         // Set default date for today
-        self.dateText.dateValue = NSDate()
+        self.dateText.dateValue = Date()
     }
     
     override func viewWillAppear() {
@@ -157,12 +157,12 @@ class AddExpenseViewController: NSViewController {
     
     // Get all expense types
     func getAllExpenseTypes() {
-        let appDelegate = NSApplication.sharedApplication().delegate as! AppDelegate
+        let appDelegate = NSApplication.shared().delegate as! AppDelegate
         let context = appDelegate.managedObjectContext
         
-        let entityDesc = NSEntityDescription.entityForName("ExpenseType", inManagedObjectContext:context!)
+        let entityDesc = NSEntityDescription.entity(forEntityName: "ExpenseType", in:context!)
         
-        let request = NSFetchRequest()
+        let request = NSFetchRequest<NSFetchRequestResult>()
         request.entity = entityDesc
         
         // Sort expenses by name
@@ -178,7 +178,7 @@ class AddExpenseViewController: NSViewController {
         var objects: NSArray
         
         let error: NSError? = nil
-        objects = try! context!.executeFetchRequest(request)
+        objects = try! context!.fetch(request) as NSArray
         
         if ( error != nil ) {
             objects = []
@@ -200,7 +200,7 @@ class AddExpenseViewController: NSViewController {
     }
     
     // This is what visually updates the selected item when the popup is changed
-    @IBAction func typePopUpChanged(sender: AnyObject) {
+    @IBAction func typePopUpChanged(_ sender: AnyObject) {
         self.typeText.setTitle( self.typeText.titleOfSelectedItem! )
     }
 
