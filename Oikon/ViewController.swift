@@ -262,6 +262,12 @@ class ViewController: NSViewController {
         
         let csvRows = contents.components(separatedBy: "\n")
         
+        // Check if the first row matches the expected format, or error out
+        if csvRows[0] != "Name,Type,Date,Value" {
+            self.showAlert(NSLocalizedString("There was an error parsing the CSV file. Please make sure the first line is 'Name,Type,Date,Value', and the following lines follow that format with the values.", comment:"") as NSString, window: self.view.window!)
+            return
+        }
+        
         for csvRow in csvRows {
             // Skip header
             if csvRow == "Name,Type,Date,Value" {
