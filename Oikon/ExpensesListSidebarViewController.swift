@@ -101,6 +101,11 @@ class ExpensesListSidebarViewController: NSViewController, NSTableViewDataSource
         
         // Reload view with new data
         self.expenseTypesTableView.reloadData()
+        
+        // Enable self.searchText's clear button
+        //let maskLayer = CALayer()
+        //self.searchText.layer = maskLayer
+        //maskLayer.backgroundColor = self.searchText.backgroundColor?.cgColor
     }
     
     override func viewWillAppear() {

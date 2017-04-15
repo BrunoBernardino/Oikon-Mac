@@ -190,7 +190,7 @@ class ExpensesListViewController: NSViewController, NSTableViewDataSource, NSTab
         let usedPredicates = NSMutableArray()
     
         // Add dates to search
-        let datesPredicate = NSPredicate(format: "(date >= %@) and (date <= %@)", self.currentFromDate! as CVarArg, self.currentToDate! as CVarArg)
+        let datesPredicate = NSPredicate(format: "(date >= %@) and (date <= %@)", self.currentFromDate! as NSDate, self.currentToDate! as NSDate)
         
         usedPredicates.add(datesPredicate)
 
@@ -452,7 +452,7 @@ class ExpensesListViewController: NSViewController, NSTableViewDataSource, NSTab
         let usedPredicates = NSMutableArray()
         
         // Add dates to search
-        let datesPredicate = NSPredicate(format: "(date >= %@) and (date <= %@)", self.currentFromDate as! CVarArg, self.currentToDate as! CVarArg)
+        let datesPredicate = NSPredicate(format: "(date >= %@) and (date <= %@)", self.currentFromDate as NSDate, self.currentToDate as NSDate)
         
         usedPredicates.add(datesPredicate)
         
