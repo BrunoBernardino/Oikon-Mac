@@ -101,7 +101,7 @@ class SettingsViewController: NSViewController {
         // Do view setup here.
         
         // Listen for iCloud changes (after it's done)
-        NotificationCenter.default.addObserver(self, selector: "iCloudDidUpdate:", name: NSNotification.Name.NSPersistentStoreCoordinatorStoresDidChange, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(SettingsViewController.iCloudDidUpdate(_:)), name: NSNotification.Name.NSPersistentStoreCoordinatorStoresDidChange, object: nil)
     }
     
     override func viewWillAppear() {

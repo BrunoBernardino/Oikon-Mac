@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="12118" systemVersion="16E195" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" initialViewController="B8D-0N-5wS">
+<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="12120" systemVersion="16F73" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" initialViewController="B8D-0N-5wS">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="12118"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="12120"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
@@ -124,7 +124,7 @@
         <!--Oikon-->
         <scene sceneID="hIz-AP-VOD">
             <objects>
-                <viewController title="Oikon" id="XfG-lQ-9wD" customClass="ViewController" customModule="Oikon" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController title="Oikon" showSeguePresentationStyle="single" id="XfG-lQ-9wD" customClass="ViewController" customModule="Oikon" customModuleProvider="target" sceneMemberID="viewController">
                     <visualEffectView key="view" appearanceType="vibrantDark" blendingMode="behindWindow" material="appearanceBased" state="followsWindowActiveState" id="12f-OC-8cl">
                         <rect key="frame" x="0.0" y="0.0" width="300" height="405"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
@@ -140,7 +140,7 @@
                                     <string key="keyEquivalent">a</string>
                                 </buttonCell>
                                 <connections>
-                                    <segue destination="vAb-TZ-zjr" kind="show" identifier="addExpense" id="xJn-Gg-vM9"/>
+                                    <segue destination="vAb-TZ-zjr" kind="modal" identifier="addExpense" id="xJn-Gg-vM9"/>
                                 </connections>
                             </button>
                             <button tag="1" translatesAutoresizingMaskIntoConstraints="NO" id="SXY-rz-dui">
@@ -154,7 +154,7 @@
                                     <string key="keyEquivalent">e</string>
                                 </buttonCell>
                                 <connections>
-                                    <segue destination="bVk-Xf-EYe" kind="show" identifier="expenseTypes" id="5g6-nq-qdT"/>
+                                    <segue destination="bVk-Xf-EYe" kind="modal" identifier="expenseTypes" id="5g6-nq-qdT"/>
                                 </connections>
                             </button>
                             <button tag="1" translatesAutoresizingMaskIntoConstraints="NO" id="9ZJ-Mg-YS0">
@@ -168,7 +168,7 @@
                                     <string key="keyEquivalent">p</string>
                                 </buttonCell>
                                 <connections>
-                                    <segue destination="ji4-DL-0YU" kind="show" identifier="pastExpensesOpen" id="Ik5-Yt-d6d"/>
+                                    <segue destination="ji4-DL-0YU" kind="modal" identifier="pastExpensesOpen" id="Ik5-Yt-d6d"/>
                                 </connections>
                             </button>
                             <button tag="1" translatesAutoresizingMaskIntoConstraints="NO" id="5FH-c7-YFT">
@@ -182,7 +182,7 @@
                                     <string key="keyEquivalent">s</string>
                                 </buttonCell>
                                 <connections>
-                                    <segue destination="wOn-k1-nU6" kind="show" identifier="settings" id="cAv-bS-gHA"/>
+                                    <segue destination="wOn-k1-nU6" kind="modal" identifier="settings" id="cAv-bS-gHA"/>
                                 </connections>
                             </button>
                             <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" setsMaxLayoutWidthAtFirstLayout="YES" allowsCharacterPickerTouchBarItem="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ml8-XT-zyf">
@@ -1154,7 +1154,7 @@
                             <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" setsMaxLayoutWidthAtFirstLayout="YES" allowsCharacterPickerTouchBarItem="NO" translatesAutoresizingMaskIntoConstraints="NO" id="N33-aI-piB">
                                 <rect key="frame" x="18" y="77" width="414" height="114"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                <textFieldCell key="cell" controlSize="mini" sendsActionOnEndEditing="YES" alignment="center" title="Oikon is a simple expense manager. No complications.  version 1.0.2  Brought to you by emotionLoop" id="WVz-jW-CdG">
+                                <textFieldCell key="cell" controlSize="mini" sendsActionOnEndEditing="YES" alignment="center" title="Oikon is a simple expense manager. No complications.  version 1.0.3  Brought to you by emotionLoop" id="WVz-jW-CdG">
                                     <font key="font" size="14" name="HelveticaNeue-Thin"/>
                                     <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
                                     <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
@@ -1197,49 +1197,48 @@
                         <rect key="frame" x="0.0" y="0.0" width="280" height="637"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <subviews>
-                            <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" misplaced="YES" allowsCharacterPickerTouchBarItem="NO" translatesAutoresizingMaskIntoConstraints="NO" id="mT5-Sq-BTO">
-                                <rect key="frame" x="57" y="591" width="167" height="26"/>
+                            <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" allowsCharacterPickerTouchBarItem="NO" translatesAutoresizingMaskIntoConstraints="NO" id="mT5-Sq-BTO">
+                                <rect key="frame" x="57" y="596" width="167" height="21"/>
                                 <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="center" title="How much did you spend?" id="ZxB-2v-w89">
                                     <font key="font" size="14" name="HelveticaNeue-Thin"/>
                                     <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
                                     <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                 </textFieldCell>
                             </textField>
-                            <textField verticalHuggingPriority="750" ambiguous="YES" allowsCharacterPickerTouchBarItem="NO" translatesAutoresizingMaskIntoConstraints="NO" id="0Rr-ms-zn1">
-                                <rect key="frame" x="55" y="535" width="170" height="44"/>
+                            <textField verticalHuggingPriority="750" allowsCharacterPickerTouchBarItem="NO" translatesAutoresizingMaskIntoConstraints="NO" id="0Rr-ms-zn1">
+                                <rect key="frame" x="55" y="540" width="170" height="44"/>
                                 <textFieldCell key="cell" lineBreakMode="truncatingMiddle" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" alignment="center" placeholderString="9.99" drawsBackground="YES" id="gVM-oa-Ixi">
                                     <font key="font" size="36" name="HelveticaNeue-Thin"/>
                                     <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
                                     <color key="backgroundColor" white="1" alpha="0.0" colorSpace="deviceWhite"/>
                                 </textFieldCell>
                             </textField>
-                            <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" ambiguous="YES" allowsCharacterPickerTouchBarItem="NO" translatesAutoresizingMaskIntoConstraints="NO" id="X3c-JR-llj">
-                                <rect key="frame" x="57" y="486" width="167" height="21"/>
+                            <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" allowsCharacterPickerTouchBarItem="NO" translatesAutoresizingMaskIntoConstraints="NO" id="X3c-JR-llj">
+                                <rect key="frame" x="57" y="491" width="167" height="21"/>
                                 <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="center" title="What was it?" id="NYN-GZ-Egh">
                                     <font key="font" size="14" name="HelveticaNeue-Thin"/>
                                     <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
                                     <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                 </textFieldCell>
                             </textField>
-                            <textField verticalHuggingPriority="750" ambiguous="YES" allowsCharacterPickerTouchBarItem="NO" translatesAutoresizingMaskIntoConstraints="NO" id="4VU-0g-KZ9">
-                                <rect key="frame" x="20" y="430" width="240" height="44"/>
+                            <textField verticalHuggingPriority="750" allowsCharacterPickerTouchBarItem="NO" translatesAutoresizingMaskIntoConstraints="NO" id="4VU-0g-KZ9">
+                                <rect key="frame" x="20" y="435" width="240" height="44"/>
                                 <textFieldCell key="cell" lineBreakMode="truncatingMiddle" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" alignment="center" placeholderString="coffee" drawsBackground="YES" id="Hyw-Y8-i5N">
                                     <font key="font" size="36" name="HelveticaNeue-Thin"/>
                                     <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
                                     <color key="backgroundColor" white="1" alpha="0.0" colorSpace="deviceWhite"/>
                                 </textFieldCell>
                             </textField>
-                            <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" ambiguous="YES" allowsCharacterPickerTouchBarItem="NO" translatesAutoresizingMaskIntoConstraints="NO" id="MwX-zK-eed">
-                                <rect key="frame" x="57" y="378" width="167" height="21"/>
+                            <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" allowsCharacterPickerTouchBarItem="NO" translatesAutoresizingMaskIntoConstraints="NO" id="MwX-zK-eed">
+                                <rect key="frame" x="57" y="383" width="167" height="21"/>
                                 <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="center" title="When was it?" id="mFF-RO-c6k">
                                     <font key="font" size="14" name="HelveticaNeue-Thin"/>
                                     <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
                                     <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                 </textFieldCell>
                             </textField>
-                            <datePicker verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Snj-d8-arT">
-                                <rect key="frame" x="71" y="217" width="139" height="148"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                            <datePicker verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="Snj-d8-arT">
+                                <rect key="frame" x="71" y="222" width="139" height="148"/>
                                 <datePickerCell key="cell" lineBreakMode="truncatingMiddle" borderStyle="bezel" alignment="left" datePickerStyle="clockAndCalendar" id="c63-EQ-CEY">
                                     <font key="font" size="14" name="HelveticaNeue-Thin"/>
                                     <date key="date" timeIntervalSinceReferenceDate="-595929600">
@@ -1249,9 +1248,8 @@
                                     <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                 </datePickerCell>
                             </datePicker>
-                            <popUpButton fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="OPw-BI-D0L">
+                            <popUpButton ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="OPw-BI-D0L">
                                 <rect key="frame" x="31" y="110" width="218" height="35"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                 <popUpButtonCell key="cell" type="bevel" bezelStyle="regularSquare" alignment="center" lineBreakMode="truncatingTail" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" pullsDown="YES" selectedItem="g0Z-y2-cuf" id="PT9-1B-7Ow">
                                     <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                     <font key="font" size="16" name="HelveticaNeue-Thin"/>
@@ -1267,8 +1265,8 @@
                                     <action selector="typePopUpChanged:" target="vAb-TZ-zjr" id="fUs-au-9Mt"/>
                                 </connections>
                             </popUpButton>
-                            <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" ambiguous="YES" allowsCharacterPickerTouchBarItem="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Mfa-X7-zIc">
-                                <rect key="frame" x="57" y="156" width="181" height="21"/>
+                            <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" allowsCharacterPickerTouchBarItem="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Mfa-X7-zIc">
+                                <rect key="frame" x="57" y="161" width="181" height="21"/>
                                 <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="center" title="What type of expense was it?" id="1Ts-Ez-YLf">
                                     <font key="font" size="14" name="HelveticaNeue-Thin"/>
                                     <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
@@ -1294,17 +1292,30 @@ DQ
                             <constraint firstItem="4VU-0g-KZ9" firstAttribute="leading" secondItem="KL8-NG-TFa" secondAttribute="leading" constant="20" id="2bK-8g-NXk"/>
                             <constraint firstAttribute="trailing" secondItem="X3c-JR-llj" secondAttribute="trailing" constant="58" id="2kR-cA-pvm"/>
                             <constraint firstItem="MwX-zK-eed" firstAttribute="leading" secondItem="KL8-NG-TFa" secondAttribute="leading" constant="59" id="C6l-2L-csd"/>
+                            <constraint firstItem="Mfa-X7-zIc" firstAttribute="top" secondItem="Snj-d8-arT" secondAttribute="bottom" constant="40" id="CIx-Fh-8ht"/>
                             <constraint firstItem="0Rr-ms-zn1" firstAttribute="leading" secondItem="KL8-NG-TFa" secondAttribute="leading" constant="55" id="EQj-Cx-yKM"/>
                             <constraint firstItem="X3c-JR-llj" firstAttribute="leading" secondItem="KL8-NG-TFa" secondAttribute="leading" constant="59" id="FQN-Ki-Wsc"/>
                             <constraint firstAttribute="trailing" secondItem="Mfa-X7-zIc" secondAttribute="trailing" constant="44" id="I87-ZA-Ktj"/>
                             <constraint firstItem="sDg-wS-tyi" firstAttribute="leading" secondItem="KL8-NG-TFa" secondAttribute="leading" constant="16" id="MhX-gd-sxK"/>
+                            <constraint firstItem="Snj-d8-arT" firstAttribute="leading" secondItem="KL8-NG-TFa" secondAttribute="leading" constant="71" id="Pns-At-a1c"/>
+                            <constraint firstItem="Snj-d8-arT" firstAttribute="top" secondItem="MwX-zK-eed" secondAttribute="bottom" constant="13" id="Tc6-cd-igj"/>
+                            <constraint firstAttribute="trailing" secondItem="OPw-BI-D0L" secondAttribute="trailing" constant="33" id="V0d-6m-PTw"/>
+                            <constraint firstAttribute="bottom" secondItem="sDg-wS-tyi" secondAttribute="bottom" constant="20" id="X00-iW-hRd"/>
+                            <constraint firstAttribute="trailing" secondItem="Snj-d8-arT" secondAttribute="trailing" constant="70" id="X8R-fa-h4a"/>
+                            <constraint firstItem="4VU-0g-KZ9" firstAttribute="top" secondItem="X3c-JR-llj" secondAttribute="bottom" constant="12" id="YCY-bc-sLn"/>
                             <constraint firstAttribute="trailing" secondItem="4VU-0g-KZ9" secondAttribute="trailing" constant="20" id="aA3-Dk-grR"/>
                             <constraint firstAttribute="trailing" secondItem="0Rr-ms-zn1" secondAttribute="trailing" constant="55" id="aPy-X3-AwJ"/>
+                            <constraint firstItem="OPw-BI-D0L" firstAttribute="leading" secondItem="KL8-NG-TFa" secondAttribute="leading" constant="33" id="cpG-1L-ASK"/>
+                            <constraint firstItem="MwX-zK-eed" firstAttribute="top" secondItem="4VU-0g-KZ9" secondAttribute="bottom" constant="31" id="ebV-yn-15b"/>
                             <constraint firstAttribute="trailing" secondItem="mT5-Sq-BTO" secondAttribute="trailing" constant="58" id="feN-Rc-h4i"/>
+                            <constraint firstItem="X3c-JR-llj" firstAttribute="top" secondItem="0Rr-ms-zn1" secondAttribute="bottom" constant="28" id="kBn-PJ-UnA"/>
                             <constraint firstItem="mT5-Sq-BTO" firstAttribute="top" secondItem="KL8-NG-TFa" secondAttribute="top" constant="20" id="kkh-E1-ypq"/>
+                            <constraint firstItem="0Rr-ms-zn1" firstAttribute="top" secondItem="mT5-Sq-BTO" secondAttribute="bottom" constant="12" id="oZ4-zZ-fPV"/>
+                            <constraint firstItem="sDg-wS-tyi" firstAttribute="top" secondItem="OPw-BI-D0L" secondAttribute="bottom" constant="63" id="qam-66-5jI"/>
                             <constraint firstItem="Mfa-X7-zIc" firstAttribute="leading" secondItem="KL8-NG-TFa" secondAttribute="leading" constant="59" id="uFM-2w-VGG"/>
                             <constraint firstAttribute="trailing" secondItem="MwX-zK-eed" secondAttribute="trailing" constant="58" id="uwe-mS-LSS"/>
                             <constraint firstItem="mT5-Sq-BTO" firstAttribute="leading" secondItem="KL8-NG-TFa" secondAttribute="leading" constant="59" id="wLI-Cz-xkF"/>
+                            <constraint firstItem="OPw-BI-D0L" firstAttribute="top" secondItem="Mfa-X7-zIc" secondAttribute="bottom" constant="13" id="yI9-zj-CDh"/>
                         </constraints>
                     </view>
                     <connections>
